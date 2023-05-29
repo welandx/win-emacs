@@ -35,4 +35,19 @@ named arguments:
          (pac-name (or iname (intern (file-name-base repo)))))
     (unless (package-installed-p pac-name)
       (package-vc-install url iname rev backend))))
+
+(defconst my-emacs-d (file-name-as-directory user-emacs-directory)
+  "Directory of emacs.d.")
+
+(defconst my-lisp-dir (concat my-emacs-d "lisp")
+  "Directory of personal configuration.")
+
+;; Light weight mode, fewer packages are used.
+(setq my-lightweight-mode-p (and (boundp 'startup-now) (eq startup-now t)))
+
+(defun require-init (pkg &optional maybe-disabled)
+  "Load PKG if MAYBE-DISABLED is nil or it's nil but start up in normal slowly."
+  (when (or (not maybe-disabled) (not my-lightweight-mode-p))
+    (load (file-truename (format "%s/%s" my-lisp-dir pkg)) t t)))
+
 (provide 'init-lib)
