@@ -1,4 +1,5 @@
 (use-package sis
+  :disabled
   ;; :hook
   ;; enable the /context/ and /inline region/ mode for specific buffers
   ;; (((text-mode prog-mode) . sis-context-mode)

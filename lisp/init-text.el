@@ -5,8 +5,8 @@
 ;; ava in emacs>29
 ;; (use-package auto-scroll
 ;;   :init (slot/vc-install :fetcher "github" :repo "RJTK/emacs-auto-scroll"))
-(add-to-list 'load-path "~/.emacs.d/site-lisp/auto-scroll")
-(require 'auto-scroll)
+;;(add-to-list 'load-path "~/.emacs.d/site-lisp/auto-scroll")
+;;(require 'auto-scroll)
 
 
 (provide 'init-text)
