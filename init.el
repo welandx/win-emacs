@@ -86,15 +86,21 @@
   (:map meow-normal-state-keymap
 	("F" . avy-goto-char)))
 (use-package ace-window
+  :ensure t
   :bind
   ("C-c w" . ace-window))
 (use-package consult
+  :ensure t
   :bind
   ("C-c b" . consult-buffer))
 (use-package autorevert
   :ensure nil
   :hook (after-init . global-auto-revert-mode))
-(pixel-scroll-precision-mode 1)
+(use-package ripgrep
+  :ensure t)
+(let* ((minver "29"))
+  (unless (version< emacs-version minver)
+    (pixel-scroll-precision-mode 1)))
 
 
 ;; extra
