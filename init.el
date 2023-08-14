@@ -2,6 +2,12 @@
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 (package-initialize)
+(require 'emacs-gc-stats)
+(setq emacs-gc-stats-gc-defaults 'emacs-defaults)
+(setq emacs-gc-stats-remind t) ; can also be a number of days
+;; Optionally disable logging the command names
+;; (setq emacs-gc-stats-inhibit-command-name-logging t)
+(emacs-gc-stats-mode +1)
 (let* ((minver "29"))
   (when (version< emacs-version minver)
     (unless (package-installed-p 'use-package)
@@ -16,6 +22,7 @@
 (setq create-lockfiles nil)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
+(setq-default frame-title-format "Weland Emacs")
 (set-window-scroll-bars (minibuffer-window) nil nil)
 (use-package vertico
   :ensure t
@@ -38,7 +45,8 @@
     (use-package modus-themes
       :ensure t
       :config
-      (load-theme 'modus-operandi-tinted t))))
+      (load-theme 'modus-operandi-tritanopia t))))
+(load-theme 'modus-vivendi t)
 (electric-pair-mode 1)
 (use-package company
   :ensure t
@@ -97,11 +105,13 @@
   :ensure nil
   :hook (after-init . global-auto-revert-mode))
 (use-package ripgrep
-  :ensure t)
+  :ensure t
+  :bind
+  ("C-c r" . ripgrep-regexp))
 (let* ((minver "29"))
   (unless (version< emacs-version minver)
     (pixel-scroll-precision-mode 1)))
-
+(setq-default cursor-in-non-selected-windows nil)
 
 ;; extra
 (cond
@@ -118,3 +128,6 @@
 (require-init 'init-text)
 (require-init 'init-git)
 (require-init 'init-modeline)
+(require-init 'init-scroll)
+(require-init 'init-ibuffer)
+(require-init 'init-dired)
