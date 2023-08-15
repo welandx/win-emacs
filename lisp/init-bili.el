@@ -1,0 +1,5 @@
+(use-package bilibili
+  :load-path "~/.emacs.d/site-lisp/bilibili.el/"
+  :after mpvi
+  :config
+  (setq bilibili-cookie-text "buvid3=74BCB938-9F55-D3A1-9185-9FA32B8C992805866infoc; b_nut=1686894105; i-wanna-go-back=-1; _uuid=F8B21864-C54B-B10B3-4B610-2F4829595F10105925infoc; FEED_LIVE_VERSION=V8; header_theme_version=CLOSE; buvid_fp_plain=undefined; SESSDATA=baa320f8%2C1702461271%2C312f0%2A61; bili_jct=1c0928a1fafd507795889b9deae07db2; DedeUserID=55039487; DedeUserID__ckMd5=ec3f1dd35cd648ad; LIVE_BUVID=AUTO2316869109912573; CURRENT_BLACKGAP=0; b_ut=5; rpdid=|(YuuJk~JuJ0J'uY)Ymk|klm; nostalgia_conf=-1; sid=74mhfghu; hit-new-style-dyn=1; hit-dyn-v2=1; VIP_DEFINITION_GUIDE=1; CURRENT_QUALITY=112; PVID=1; bsource=search_bing; buvid4=3FB277A0-8ABA-72F5-2284-7835FDE4307A73313-023072317-a2anb0cl3oDyQfQ9Bo8GiA%3D%3D; fingerprint=568d61c29ac512192bb13ba871928d05; buvid_fp=74BCB938-9F55-D3A1-9185-9FA32B8C992805866infoc; CURRENT_FNVAL=4048; bp_video_offset_55039487=821541842607669200; home_feed_column=4; b_lsid=4632D9B1_189954C3F35; browser_resolution=221-880"))
