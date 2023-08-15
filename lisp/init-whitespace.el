@@ -1,5 +1,5 @@
 (use-package whitespace
-  :hook (after-init . global-whitespace-mode)
+  :hook (prog-mode . whitespace-mode)
   :config
   ;; Don't use different background for tabs.
   (face-spec-set 'whitespace-tab
