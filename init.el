@@ -2,12 +2,15 @@
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 (package-initialize)
-(require 'emacs-gc-stats)
-(setq emacs-gc-stats-gc-defaults 'emacs-defaults)
-(setq emacs-gc-stats-remind t) ; can also be a number of days
-;; Optionally disable logging the command names
-;; (setq emacs-gc-stats-inhibit-command-name-logging t)
-(emacs-gc-stats-mode +1)
+(use-package emacs-gc-stats
+  :ensure t
+  :config
+  ;; Optionally disable logging the command names
+  ;; (setq emacs-gc-stats-inhibit-command-name-logging t)
+  (setq emacs-gc-stats-gc-defaults 'emacs-defaults)
+  (setq emacs-gc-stats-remind t) ; can also be a number of days
+  (emacs-gc-stats-mode +1))
+
 (let* ((minver "29"))
   (when (version< emacs-version minver)
     (unless (package-installed-p 'use-package)
@@ -131,3 +134,14 @@
 (require-init 'init-scroll)
 (require-init 'init-ibuffer)
 (require-init 'init-dired)
+
+
+;; Mac OS
+(defconst *is-a-mac* (eq system-type 'darwin))
+(when *is-a-mac*
+  (when (member "Menlo" (font-family-list))
+    (set-frame-font "Menlo-14" t t))
+  (setq-default org-directory "~/Documents/org")
+  (require-init 'init-telega)
+  (require-init 'init-osx-keys)
+  (require-init 'init-exec-path))
