@@ -5,7 +5,7 @@
 ;;       '(("[pP][lL][iI][nN][kK]" gbk-dos . gbk-dos)
 ;;   ("[cC][mM][dD][pP][rR][oO][xX][yY]" gbk-dos . gbk-dos)
 ;;   ("[gG][sS]" gbk-dos . gbk-dos)))
-(add-to-list 'process-coding-system-alist 
+(add-to-list 'process-coding-system-alist
                         '("[rR][gG]" . (utf-8 . gbk-dos)))
 
 (defun spacemacs/dos2unix ()
