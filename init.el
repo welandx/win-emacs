@@ -49,7 +49,6 @@
       :ensure t
       :config
       (load-theme 'modus-operandi-tritanopia t))))
-(load-theme 'modus-vivendi t)
 (electric-pair-mode 1)
 (use-package company
   :ensure t
@@ -71,6 +70,7 @@
 (setq-default default-directory "~/")
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
+(setq display-time-24hr-format t)
 (display-time-mode 1)
 (display-battery-mode 1)
 (use-package saveplace
@@ -111,6 +111,8 @@
   :ensure t
   :bind
   ("C-c r" . ripgrep-regexp))
+(use-package rotate
+  :ensure t)
 (let* ((minver "29"))
   (unless (version< emacs-version minver)
     (pixel-scroll-precision-mode 1)))
@@ -120,8 +122,9 @@
 (cond
  ((string-equal system-type "windows-nt")
   (progn
-    (set-frame-font "Consolas-12")
-    (set-fontset-font t 'han "微软雅黑")
+    (set-frame-font "Consolas-16")
+    (set-fontset-font t 'han "微软雅黑-13")
+    (load-theme 'yoshi t)
     (require 'init-gbk)
     (require-init 'init-win)
     (require-init 'init-sis))))
