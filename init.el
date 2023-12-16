@@ -1,20 +1,18 @@
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-(package-initialize)
-(use-package emacs-gc-stats
-  :ensure t
-  :config
-  ;; Optionally disable logging the command names
-  ;; (setq emacs-gc-stats-inhibit-command-name-logging t)
-  (setq emacs-gc-stats-gc-defaults 'emacs-defaults)
-  (setq emacs-gc-stats-remind t) ; can also be a number of days
-  (emacs-gc-stats-mode +1))
+(unless (bound-and-true-p package--initialized)
+  (setq package-enable-at-startup nil)
+  (package-initialize))
 
 (let* ((minver "29"))
   (when (version< emacs-version minver)
     (unless (package-installed-p 'use-package)
       (package-install "use-package"))))
+(defconst *is-a-mac* (eq system-type 'darwin))
+(defconst *is-a-win* (eq system-type 'windows-nt))
+
+;; 一些默认设置
 (setq default-directory "~/")
 (menu-bar-mode 0)
 (tool-bar-mode -1)
@@ -27,6 +25,13 @@
 (setq ring-bell-function 'ignore)
 (setq-default frame-title-format "Weland Emacs")
 (set-window-scroll-bars (minibuffer-window) nil nil)
+(setq-default cursor-in-non-selected-windows nil)
+(setq word-wrap-by-category t)
+(toggle-word-wrap)
+(setq byte-compile-warnings nil)
+(setq shr-max-image-proportion 0.7) ;;限制 image 大小
+(setq confirm-kill-processes nil)
+;; 一些默认 package
 (use-package vertico
   :ensure t
   :config
@@ -54,6 +59,16 @@
   :ensure t
   :config
   (global-company-mode 1))
+(use-package fussy
+  :ensure t
+  :config
+  (push 'fussy completion-styles)
+  (setq
+   ;; For example, project-find-file uses 'project-files which uses
+   ;; substring completion by default. Set to nil to make sure it's using
+   ;; flx.
+   completion-category-defaults nil
+   completion-category-overrides nil))
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'init-lib)
 (use-package meow
@@ -112,11 +127,16 @@
   :bind
   ("C-c r" . ripgrep-regexp))
 (use-package rotate
+  :ensure t
+  :bind
+  ("C-c z" . rotate-layout))
+(use-package ef-themes
   :ensure t)
-(let* ((minver "29"))
-  (unless (version< emacs-version minver)
-    (pixel-scroll-precision-mode 1)))
-(setq-default cursor-in-non-selected-windows nil)
+(use-package super-save
+  :ensure t
+  :config
+  (super-save-mode +1))
+
 
 ;; extra
 (cond
@@ -127,8 +147,9 @@
     (load-theme 'yoshi t)
     (require 'init-gbk)
     (require-init 'init-win)
-    (require-init 'init-sis))))
-
+    )))
+(require-init 'init-sis)
+(require-init 'init-org)
 (require-init 'init-whitespace)
 (require-init 'init-gdb)
 (require-init 'init-text)
@@ -137,14 +158,45 @@
 (require-init 'init-scroll)
 (require-init 'init-ibuffer)
 (require-init 'init-dired)
-
+(use-package fontawesome
+  :ensure t)
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; Mac OS
-(defconst *is-a-mac* (eq system-type 'darwin))
 (when *is-a-mac*
   (when (member "Menlo" (font-family-list))
-    (set-frame-font "Menlo-14" t t))
+    (set-frame-font "MonoLisa Nasy-15" t t))
+  (set-fontset-font "fontset-default" 'unicode "SF Pro")
+  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   (setq-default org-directory "~/Documents/org")
   (require-init 'init-telega)
+  (require-init 'init-theme)
   (require-init 'init-osx-keys)
   (require-init 'init-exec-path))
+
+(use-package elfeed
+  :ensure t
+  :bind
+  ("C-c e" . elfeed))
+(use-package nerd-icons
+  :ensure t
+  :custom
+  (nerd-icons-font-family "Symbols Nerd Font Mono"))
+(use-package treesit-auto
+  :ensure t
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode)
+  (setq treesit-font-lock-level 4))
+
+(use-package hl-defined
+  ;; 高亮 emacs-lisp function
+  :load-path "./site-lisp/hl-defined"
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))
+
+
+
