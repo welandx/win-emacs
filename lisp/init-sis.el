@@ -1,25 +1,43 @@
-(use-package sis
-  :disabled
-  ;; :hook
-  ;; enable the /context/ and /inline region/ mode for specific buffers
-  ;; (((text-mode prog-mode) . sis-context-mode)
-  ;;  ((text-mode prog-mode) . sis-inline-mode))
-
-  :config
-  (sis-ism-lazyman-config nil t 'w32)
-
-  ;; enable the /cursor color/ mode
-  (sis-global-cursor-color-mode t)
-  ;; enable the /respect/ mode
-  ;;(sis-global-respect-mode t)
-  ;; enable the /context/ mode for all buffers
-  (sis-global-context-mode t)
-  ;; enable the /inline english/ mode for all buffers
-  (sis-global-inline-mode t)
-  )
-
-  (with-eval-after-load 'sis
+;; 配合 meow, keypad 与 respect-mode 有冲突
+(with-eval-after-load 'sis
     (add-hook 'meow-insert-exit-hook #'sis-set-english)
     (add-to-list 'sis-context-hooks 'meow-insert-enter-hook))
 
+(use-package sis
+  :init
+  ;; `C-s/r' 默认优先使用英文 必须在 sis-global-respect-mode 前配置
+  (setq sis-respect-go-english-triggers
+        (list 'isearch-forward 'isearch-backward) ; isearch-forward 命令时默认进入en
+        sis-respect-restore-triggers
+        (list 'isearch-exit 'isearch-abort)) ; isearch-forward 恢复, isearch-exit `<Enter>', isearch-abor `C-g'
+:config
+(when *is-a-win*
+  (sis-ism-lazyman-config nil t 'w32))
+(when *is-a-mac*
+  (sis-ism-lazyman-config
+
+   ;; English input source may be: "ABC", "US" or another one.
+   "com.apple.keylayout.ABC"
+   ;; "com.apple.keylayout.US"
+
+   ;; Other language input source: "rime", "sogou" or another one.
+   "im.rime.inputmethod.Squirrel.Hans"))
+   ;;"com.sogou.inputmethod.sogou.pinyin")
+  ;; enable the /cursor color/ mode 中英文光标颜色模式
+  (sis-global-cursor-color-mode t)
+  ;; enable the /respect/ mode buffer 输入法状态记忆模式
+  ;; (sis-global-respect-mode t)
+  ;; enable the /follow context/ mode for all buffers
+  (sis-global-context-mode t)
+  ;; enable the /inline english/ mode for all buffers
+  (sis-global-inline-mode t) ; 中文输入法状态下，中文后<spc>自动切换英文，结束后自动切回中文
+  ;; (global-set-key (kbd "<f9>") 'sis-log-mode) ; 开启日志
+  (setq sis-do-set
+	(lambda(source) (start-process "set-input-source" nil "macism" source "50000")))
+  (setq sis-inline-tighten-head-rule nil)
+  (setq sis-default-cursor-color "brown3")
+  (setq sis-other-cursor-color "orange")
+  (setq sis-prefix-override-keys (list "C-c" "C-x" "C-h" "C-c e"))
+  )
 (provide 'init-sis)
+;; 况且吃而

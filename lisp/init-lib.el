@@ -114,4 +114,5 @@ named arguments:
 
 ;; register keyword on require
 (package-vc-use-package-set-keyword)
+
 (provide 'init-lib)
