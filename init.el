@@ -117,6 +117,7 @@
   (unless (version< emacs-version minver)
     (pixel-scroll-precision-mode 1)))
 (setq-default cursor-in-non-selected-windows nil)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; extra
 (cond
