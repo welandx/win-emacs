@@ -132,11 +132,15 @@
   ("C-c z" . rotate-layout))
 (use-package ef-themes
   :ensure t)
+(let* ((minver "29"))
+  (unless (version< emacs-version minver)
+    (pixel-scroll-precision-mode 1)))
+(setq-default cursor-in-non-selected-windows nil)
+(fset 'yes-or-no-p 'y-or-n-p)
 (use-package super-save
   :ensure t
   :config
   (super-save-mode +1))
-
 
 ;; extra
 (cond
