@@ -201,6 +201,3 @@
   :load-path "./site-lisp/hl-defined"
   :config
   (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))
-
-
-
