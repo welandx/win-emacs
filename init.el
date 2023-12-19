@@ -140,17 +140,28 @@
   :ensure t
   :config
   (super-save-mode +1))
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+(use-package fontawesome
+  :ensure t)
+(use-package nerd-icons
+  :ensure t
+  :config
+  (when (and *is-a-mac* (member "Symbols Nerd Font Mono" (font-family-list)))
+    (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
+  (when *is-a-win*
+    (setq nerd-icons-font-family "FantasqueSansM Nerd Font Mono")))
 
 ;; extra
-(cond
- ((string-equal system-type "windows-nt")
-  (progn
-    (set-frame-font "Consolas-16")
-    (set-fontset-font t 'han "微软雅黑-13")
-    (load-theme 'yoshi t)
-    (require 'init-gbk)
-    (require-init 'init-win)
-    )))
+(when *is-a-win*
+  ;; (set-frame-font "FantasqueSansM Nerd Font Mono-16")
+  (set-fontset-font t 'han "微软雅黑-13")
+  (load-theme 'yoshi t)
+  (require 'init-gbk)
+  (require-init 'init-win)
+  )
 (require-init 'init-sis)
 (require-init 'init-org)
 (require-init 'init-whitespace)
@@ -161,12 +172,9 @@
 (require-init 'init-scroll)
 (require-init 'init-ibuffer)
 (require-init 'init-dired)
-(use-package fontawesome
-  :ensure t)
-(use-package rainbow-delimiters
-  :ensure t
-  :config
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+(require-init 'init-fonts)
+
+
 
 ;; Mac OS
 (when *is-a-mac*
@@ -174,7 +182,6 @@
   ;;   (set-frame-font "MonoLisa Nasy-15" t t))
   ;; (set-fontset-font "fontset-default" 'unicode "SF Pro")
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-  (require-init 'init-fonts)
   (setq-default org-directory "~/Documents/org")
   (require-init 'init-telega)
   (require-init 'init-theme)
@@ -185,10 +192,7 @@
   :ensure t
   :bind
   ("C-c e" . elfeed))
-(use-package nerd-icons
-  :ensure t
-  :custom
-  (nerd-icons-font-family "Symbols Nerd Font Mono"))
+
 (use-package treesit-auto
   :ensure t
   :config

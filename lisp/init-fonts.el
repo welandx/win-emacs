@@ -10,7 +10,8 @@
 
 (defcustom minemacs-fonts-plist
   '(:default
-    ((:family "MonoLisa Nasy" :height 150)
+    ((:family "FantasqueSansM Nerd Font Mono" :height 150)
+     (:family "MonoLisa Nasy" :height 150)
      (:family "Iosevka Fixed Curly Slab" :height 150)
      (:family "Iosevka Comfy Fixed" :height 150)
      (:family "Iosevka Fixed Curly" :height 150)
@@ -165,7 +166,8 @@ scaling factor for the font in Emacs' `face-font-rescale-alist'. See the
 ;; FIXME
 (+add-hook! (window-setup server-after-make-frame) #'+setup-fonts)
 ;; (add-hook 'window-setup-hook #'(lambda () (add-hook 'server-after-make-frame-hook #'+setup-fonts)))
-(set-fontset-font t 'mathematical "Latin Modern Math-13")
+(when *is-a-mac*
+(set-fontset-font t 'mathematical "Latin Modern Math-13"))
 ;; (set-fontset-font t 'latin "Agave Nerd Font Mono")
 
 (provide 'init-fonts)

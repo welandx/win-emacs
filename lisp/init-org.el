@@ -11,19 +11,8 @@
     (setq mpvi-danmaku2ass "~/Documents/GitHub/danmaku2ass/danmaku2ass.py")
     :bind
     ("C-c s" . mpvi-seek)
-    ("C-c i" . mpvi-insert)))
-(use-package org-download
-  :ensure t
-  :after org)
-(use-package denote
-  :ensure t
-  ;; :vc (:fetcher "github" :repo "protesilaos/denote")
-  :bind
-  ("C-c d" . denote-open-or-create)
-  :config
-  (setq denote-directory org-directory))
-
-(with-eval-after-load 'org
+    ("C-c i" . mpvi-insert))
+  (with-eval-after-load 'org
   (defun my/org-latex-preview-center (ov)
   (save-excursion
     (goto-char (overlay-start ov))
@@ -40,7 +29,6 @@
                     (make-string offset ?\ )
                     'face (org-latex-preview--face-around
                            (overlay-start ov) (overlay-end ov)))))))
-
 (add-hook 'org-latex-preview-update-overlay-functions
           #'my/org-latex-preview-center)
 ;; src: https://stackoverflow.com/questions/17478260/completely-hide-the-properties-drawer-in-org-mode
@@ -115,14 +103,26 @@
 (advice-add 'org-insert-heading-respect-content :after #'eli/org-expand-all)
 (define-key org-mode-map [C-tab] #'eli/org-expand-all)
 )
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1))))
+
+;; 通用配置
+(use-package org-download
+  :ensure t
+  :after org)
+(use-package denote
+  :ensure t
+  ;; :vc (:fetcher "github" :repo "protesilaos/denote")
+  :bind
+  ("C-c d" . denote-open-or-create)
+  :config
+  (setq denote-directory org-directory))
+
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
   :ensure t
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
-
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
 
 ;; To display LaTeX symbols as unicode
 (setq org-pretty-entities t)
@@ -136,11 +136,11 @@
   :ensure t
   :after (org)
   :init
-  (setq org-modern-star '("􀄩"))
-  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-star '("󰓎"))
+  (setq org-modern-hide-stars "󰥺")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
-  (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
+  (setq org-modern-checkbox '((?X . "󰄲") (?- . "󰥺") (?\s . "󰄮")))
+  (setq org-modern-progress '("󰲼" "󰦕" "󱞈" "󰦖" "󰦘"))
   (setq org-modern-table-vertical 2)
   (setq org-modern-block-name nil)
   (setq org-modern-keyword nil)
@@ -149,19 +149,19 @@
 
 (defun my-iconify-org-buffer ()
   (progn
-    (push '(":PROPERTIES:" . ?􀈭) prettify-symbols-alist)
-    (push '(":ID:      " . ?􀐚) prettify-symbols-alist)
-    (push '(":ROAM_ALIASES:" . ?􀅷) prettify-symbols-alist)
-    (push '(":END:" . ?􀅽) prettify-symbols-alist)
-    (push '("#+TITLE:" . ?􀧵) prettify-symbols-alist)
-    (push '("#+AUTHOR:" . ?􀉩) prettify-symbols-alist)
-    (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist)
-    (push '("#+STARTUP: " . ?􀖆) prettify-symbols-alist))
+    (push '(":PROPERTIES:" . ?󰑹) prettify-symbols-alist)
+    (push '(":ID:      " . ?󰻾) prettify-symbols-alist)
+    (push '(":ROAM_ALIASES:" . ?󰑢) prettify-symbols-alist)
+    (push '(":END:" . ?) prettify-symbols-alist)
+    (push '("#+TITLE:" . ?󰗴) prettify-symbols-alist)
+    (push '("#+AUTHOR:" . ?󰸎) prettify-symbols-alist)
+    (push '("#+RESULTS:" . ?) prettify-symbols-alist)
+    (push '("#+ATTR_ORG:" . ?󰺲) prettify-symbols-alist)
+    (push '("#+STARTUP: " . ?󰜉) prettify-symbols-alist))
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
-(setq org-ellipsis " 􀍠")
+(setq org-ellipsis " 󰺠")
 (setq org-hide-emphasis-markers nil)
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)

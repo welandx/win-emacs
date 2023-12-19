@@ -15,6 +15,8 @@
 (when *is-a-win*
   (sis-ism-lazyman-config nil t 'w32))
 (when *is-a-mac*
+  (setq sis-do-set
+	(lambda(source) (start-process "set-input-source" nil "macism" source "50000")))
   (sis-ism-lazyman-config
 
    ;; English input source may be: "ABC", "US" or another one.
@@ -33,8 +35,7 @@
   ;; enable the /inline english/ mode for all buffers
   (sis-global-inline-mode t) ; 中文输入法状态下，中文后<spc>自动切换英文，结束后自动切回中文
   ;; (global-set-key (kbd "<f9>") 'sis-log-mode) ; 开启日志
-  (setq sis-do-set
-	(lambda(source) (start-process "set-input-source" nil "macism" source "50000")))
+  
   (setq sis-inline-tighten-head-rule nil)
   (setq sis-default-cursor-color "brown3")
   (setq sis-other-cursor-color "orange")
