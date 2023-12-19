@@ -167,10 +167,11 @@
 
 ;; Mac OS
 (when *is-a-mac*
-  (when (member "Menlo" (font-family-list))
-    (set-frame-font "MonoLisa Nasy-15" t t))
-  (set-fontset-font "fontset-default" 'unicode "SF Pro")
-  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  ;; (when (member "Menlo" (font-family-list))
+  ;;   (set-frame-font "MonoLisa Nasy-15" t t))
+  ;; (set-fontset-font "fontset-default" 'unicode "SF Pro")
+  ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  (require-init 'init-fonts)
   (setq-default org-directory "~/Documents/org")
   (require-init 'init-telega)
   (require-init 'init-theme)
@@ -188,7 +189,7 @@
 (use-package treesit-auto
   :ensure t
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
+  (treesit-auto-add-to-auto-mode-alist '("cpp"))
   (global-treesit-auto-mode)
   (setq treesit-font-lock-level 4))
 
