@@ -31,6 +31,17 @@
 (setq byte-compile-warnings nil)
 (setq shr-max-image-proportion 0.7) ;;限制 image 大小
 (setq confirm-kill-processes nil)
+(fset 'yes-or-no-p 'y-or-n-p)
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(setq-default default-directory "~/")
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file t)
+(setq display-time-24hr-format t)
+(display-time-mode 1)
+(display-battery-mode 1)
+;; 加载 lib
+(require 'init-lib)
+
 ;; 一些默认 package
 (use-package vertico
   :ensure t
@@ -69,8 +80,7 @@
    ;; flx.
    completion-category-defaults nil
    completion-category-overrides nil))
-(add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'init-lib)
+
 (use-package meow
   :ensure t
   :init
@@ -82,12 +92,6 @@
   :ensure t
   :bind
   ("C-," . embark-act))
-(setq-default default-directory "~/")
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file t)
-(setq display-time-24hr-format t)
-(display-time-mode 1)
-(display-battery-mode 1)
 (use-package saveplace
   :ensure nil
   :hook
@@ -132,11 +136,6 @@
   ("C-c z" . rotate-layout))
 (use-package ef-themes
   :ensure t)
-(let* ((minver "29"))
-  (unless (version< emacs-version minver)
-    (pixel-scroll-precision-mode 1)))
-(setq-default cursor-in-non-selected-windows nil)
-(fset 'yes-or-no-p 'y-or-n-p)
 (use-package super-save
   :ensure t
   :config
@@ -171,10 +170,11 @@
 
 ;; Mac OS
 (when *is-a-mac*
-  (when (member "Menlo" (font-family-list))
-    (set-frame-font "MonoLisa Nasy-15" t t))
-  (set-fontset-font "fontset-default" 'unicode "SF Pro")
-  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  ;; (when (member "Menlo" (font-family-list))
+  ;;   (set-frame-font "MonoLisa Nasy-15" t t))
+  ;; (set-fontset-font "fontset-default" 'unicode "SF Pro")
+  ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  (require-init 'init-fonts)
   (setq-default org-directory "~/Documents/org")
   (require-init 'init-telega)
   (require-init 'init-theme)
@@ -192,12 +192,13 @@
 (use-package treesit-auto
   :ensure t
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
+  (treesit-auto-add-to-auto-mode-alist '("cpp"))
   (global-treesit-auto-mode)
   (setq treesit-font-lock-level 4))
 
 (use-package hl-defined
   ;; 高亮 emacs-lisp function
+  :if *is-a-mac*
   :load-path "./site-lisp/hl-defined"
   :config
   (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))

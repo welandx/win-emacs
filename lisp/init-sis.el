@@ -4,6 +4,7 @@
     (add-to-list 'sis-context-hooks 'meow-insert-enter-hook))
 
 (use-package sis
+  :ensure t
   :init
   ;; `C-s/r' 默认优先使用英文 必须在 sis-global-respect-mode 前配置
   (setq sis-respect-go-english-triggers
@@ -40,4 +41,3 @@
   (setq sis-prefix-override-keys (list "C-c" "C-x" "C-h" "C-c e"))
   )
 (provide 'init-sis)
-;; 况且吃而
