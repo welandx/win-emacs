@@ -24,6 +24,5 @@
   (pixel-scroll-interpolate-up))
 
 (defalias 'scroll-up-command '+pixel-scroll-interpolate-down)
-(defalias 'scroll-down-command '+pixel-scroll-interpolate-up)
-)
+(defalias 'scroll-down-command '+pixel-scroll-interpolate-up))
 (provide 'init-scroll)
