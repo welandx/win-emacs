@@ -54,4 +54,12 @@
                #'auto-theme-mode-filter)))
       (and proc (kill-process proc)))))
 (auto-theme-mode 1)
+(when *is-a-mac*
+ (set-face-background 'default "mac:windowBackgroundColor")
+(dolist (f (face-list)) (set-face-stipple f "alpha:60%"))
+(defface my/default-blurred
+  '((t :inherit 'default :stipple "alpha:60%"))
+   "Like 'default but blurred."
+   :group 'my)
+(setq face-remapping-alist (append face-remapping-alist '((default my/default-blurred)))))
 (provide 'init-theme)
