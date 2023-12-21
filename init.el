@@ -158,7 +158,8 @@
 (when *is-a-win*
   ;; (set-frame-font "FantasqueSansM Nerd Font Mono-16")
   (set-fontset-font t 'han "微软雅黑-13")
-  (load-theme 'yoshi t)
+  ;; (load-theme 'yoshi t)
+  (load-theme 'wheatgrass t)
   (require 'init-gbk)
   (require-init 'init-win)
   )

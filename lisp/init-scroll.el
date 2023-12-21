@@ -10,7 +10,7 @@
 (let* ((minver "29"))
   (unless (version< emacs-version minver)
     (pixel-scroll-precision-mode 1)))
-(setq pixel-scroll-precision-interpolate-page t)
+(setq pixel-scroll-precision-interpolate-page t) ;; smooth scroll M-v C-v
 (defun +pixel-scroll-interpolate-down (&optional lines)
   (interactive)
   (if lines
