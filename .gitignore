@@ -4,3 +4,6 @@
 !/init.el
 !/early-init.el
 !/.gitignore
+/lisp/init-private.el
+!/elfeed.org
+!/site-lisp/hl-defined/

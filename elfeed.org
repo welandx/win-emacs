@@ -1,0 +1,7 @@
+* News :elfeed:
+** IT
+*** http://www.ithome.com/rss/
+** Game
+*** https://www.gcores.com/rss
+** Emacs
+*** https://www.reddit.com/r/emacs/.rss
