@@ -6,5 +6,6 @@
 (set-frame-position (selected-frame) 0 0)
 (set-frame-size (selected-frame) 2048 1200 t)
 (setq default-frame-alist '((ns-transparent-titlebar . t)
+			    (alpha-background . 80)
 			    (width . 100)
 			    (height . 40)))

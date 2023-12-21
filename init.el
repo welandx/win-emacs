@@ -11,7 +11,7 @@
       (package-install "use-package"))))
 (defconst *is-a-mac* (eq system-type 'darwin))
 (defconst *is-a-win* (eq system-type 'windows-nt))
-
+(defconst *is-a-linux* (eq system-type 'gnu/linux))
 ;; 一些默认设置
 (setq default-directory "~/")
 (menu-bar-mode 0)
@@ -189,6 +189,11 @@
   (require-init 'init-osx-keys)
   (require-init 'init-exec-path))
 
+;; GNU/Linux
+(when *is-a-linux*
+  (setq-default org-directory "~/org")
+  (load-theme 'ef-bio t))
+
 (use-package elfeed
   :ensure t
   :bind
@@ -208,5 +213,6 @@
   :config
   (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))
 
+;; FIXME private info
 (use-package immersive-translate
   :ensure t)
