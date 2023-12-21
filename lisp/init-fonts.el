@@ -11,7 +11,9 @@
 (defcustom minemacs-fonts-plist
   '(:default
     ((:family "FantasqueSansM Nerd Font Mono" :height 150)
+     (:family "SauceCodePro Nerd Font" :height 160)
      (:family "MonoLisa Nasy" :height 150)
+     (:family "Agave Nerd Font Mono" :height 150)
      (:family "Iosevka Fixed Curly Slab" :height 150)
      (:family "Iosevka Comfy Fixed" :height 150)
      (:family "Iosevka Fixed Curly" :height 150)
@@ -47,14 +49,14 @@
      "Liberation Sans"
      "Segoe UI")
     :symbol
-    ((:family "Segoe UI Symbol" :prepend t)
-     (:family "Symbola" :prepend t)
-     (:family "Symbol" :prepend t))
+    ((:family "Segoe UI Symbol" :scale 0.7 :prepend t)
+     (:family "Symbola" :scale 0.7 :prepend t)
+     (:family "Symbol" :scale 0.7 :prepend t))
     :emoji
-    ((:family "Noto Color Emoji" :scale 0.9 :prepend t)
-     (:family "Apple Color Emoji" :scale 0.8 :prepent t)
-     (:family "Segoe UI Emoji" :scale 0.9 :prepend t)
-     (:family "Quivira" :scale 0.9 :prepend t))
+    ((:family "Noto Color Emoji" :scale 0.7 :prepend t)
+     (:family "Apple Color Emoji" :scale 0.7 :prepent t)
+     (:family "Segoe UI Emoji" :scale 0.7 :prepend t)
+     (:family "Quivira" :scale 0.7 :prepend t))
     ;; Arabic script
     :arabic
     ("Amiri Typewriter"
@@ -68,7 +70,7 @@
     ;; ((:family "Latin Modern Math" :scale 0.8))
     ;; Chinese script
     :han
-    ((:family "LXGW WenKai Screen" :scale 1.3)
+    ((:family "LXGW WenKai Screen" :scale 1.0)
      (:family "LXGW Neo Xihei" :scale 1.3)
      (:family "WenQuanYi Micro Hei Mono" :scale 1.3)
      (:family "LXGW WenKai Mono" :scale 1.3)
@@ -167,7 +169,11 @@ scaling factor for the font in Emacs' `face-font-rescale-alist'. See the
 (+add-hook! (window-setup server-after-make-frame) #'+setup-fonts)
 ;; (add-hook 'window-setup-hook #'(lambda () (add-hook 'server-after-make-frame-hook #'+setup-fonts)))
 (when *is-a-mac*
-(set-fontset-font t 'mathematical "Latin Modern Math-13"))
+  (set-fontset-font t 'mathematical "Latin Modern Math-13")
+  (set-fontset-font t 'han "LXGW WenKai Screen-17")
+  ;; (set-fontset-font t 'han (font-spec :family "LXGW WenKai Screen"
+  ;; 				      :scale 1.2));; 说
+  )
 ;; (set-fontset-font t 'latin "Agave Nerd Font Mono")
 
 (provide 'init-fonts)

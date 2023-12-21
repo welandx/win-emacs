@@ -151,7 +151,7 @@
   :config
   (when (and *is-a-mac* (member "Symbols Nerd Font Mono" (font-family-list)))
     (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
-  (when *is-a-win*
+  (when (and *is-a-win* (member "FantasqueSansM Nerd Font Mono" (font-family-list)))
     (setq nerd-icons-font-family "FantasqueSansM Nerd Font Mono")))
 
 ;; extra
@@ -206,3 +206,6 @@
   :load-path "./site-lisp/hl-defined"
   :config
   (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))
+
+(use-package immersive-translate
+  :ensure t)
