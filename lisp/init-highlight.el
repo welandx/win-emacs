@@ -7,7 +7,6 @@
 
 (use-package hl-defined
   ;; 高亮 emacs-lisp function
-  :if *is-a-mac*
   :load-path "./site-lisp/hl-defined"
   :config
   (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))
