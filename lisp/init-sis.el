@@ -41,4 +41,21 @@
   (setq sis-other-cursor-color "orange")
   (setq sis-prefix-override-keys (list "C-c" "C-x" "C-h" "C-c e"))
   )
+(use-package rime
+  :if *is-a-linux*
+  :ensure t
+   :custom
+   (default-input-method "rime")
+   (rime-show-candidate 'posframe)
+   :config
+   (setq rime-user-data-dir "~/.local/share/fcitx5/rime/")
+   ;; 临时英文断言
+   (setq rime-disable-predicates
+         '(meow-normal-mode-p
+           rime-predicate-current-input-punctuation-p
+           rime-predicate-space-after-cc-p
+           rime-predicate-current-uppercase-letter-p
+           rime-predicate-tex-math-or-command-p
+           rime-predicate-after-alphabet-char-p
+           rime-predicate-prog-in-code-p)))
 (provide 'init-sis)
