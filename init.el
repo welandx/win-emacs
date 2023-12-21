@@ -153,8 +153,10 @@
     (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
   (when (and *is-a-win* (member "FantasqueSansM Nerd Font Mono" (font-family-list)))
     (setq nerd-icons-font-family "FantasqueSansM Nerd Font Mono")))
+(use-package yasnippet
+  :ensure t)
 
-;; extra
+;; windows
 (when *is-a-win*
   ;; (set-frame-font "FantasqueSansM Nerd Font Mono-16")
   (set-fontset-font t 'han "微软雅黑-13")
@@ -163,20 +165,6 @@
   (require 'init-gbk)
   (require-init 'init-win)
   )
-(require-init 'init-sis)
-(require-init 'init-org)
-(require-init 'init-whitespace)
-(require-init 'init-gdb)
-(require-init 'init-text)
-(require-init 'init-git)
-(require-init 'init-modeline)
-(require-init 'init-scroll)
-(require-init 'init-ibuffer)
-(require-init 'init-dired)
-(require-init 'init-fonts)
-
-
-
 ;; Mac OS
 (when *is-a-mac*
   ;; (when (member "Menlo" (font-family-list))
@@ -188,31 +176,26 @@
   (require-init 'init-theme)
   (require-init 'init-osx-keys)
   (require-init 'init-exec-path))
-
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/org")
   (load-theme 'ef-bio t))
 
-(use-package elfeed
-  :ensure t
-  :bind
-  ("C-c e" . elfeed))
+(require-init 'init-sis)
+(require-init 'init-org)
+(require-init 'init-whitespace)
+(require-init 'init-gdb)
+(require-init 'init-text)
+(require-init 'init-git)
+(require-init 'init-modeline)
+(require-init 'init-scroll)
+(require-init 'init-ibuffer)
+(require-init 'init-dired)
+(require-init 'init-fonts)
+(require-init 'init-private)
+(require-init 'init-news)
+(require-init 'init-highlight)
 
-(use-package treesit-auto
-  :ensure t
-  :config
-  (treesit-auto-add-to-auto-mode-alist '("cpp"))
-  (global-treesit-auto-mode)
-  (setq treesit-font-lock-level 4))
 
-(use-package hl-defined
-  ;; 高亮 emacs-lisp function
-  :if *is-a-mac*
-  :load-path "./site-lisp/hl-defined"
-  :config
-  (add-hook 'emacs-lisp-mode-hook 'hdefd-highlight-mode 'APPEND))
 
-;; FIXME private info
-(use-package immersive-translate
-  :ensure t)
+

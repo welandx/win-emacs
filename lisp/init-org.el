@@ -1,3 +1,4 @@
+;; Mac 配置
 (when *is-a-mac*
   (use-package org
     :load-path "~/kem/site-lisp/org-lisp"
@@ -114,9 +115,14 @@
   :ensure t
   ;; :vc (:fetcher "github" :repo "protesilaos/denote")
   :bind
-  ("C-c d" . denote-open-or-create)
+  (:prefix-map denote-map
+	       :prefix "C-c d"
+  ("f" . denote-open-or-create)
+  ("d" . denote-journal-extras-new-or-existing-entry))
   :config
-  (setq denote-directory org-directory))
+  (setq denote-directory org-directory)
+  (require 'denote-journal-extras)
+  (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
@@ -165,5 +171,23 @@
 (setq org-hide-emphasis-markers nil)
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
+(use-package org
+  :bind
+  ("C-c a" . org-agenda)
+  :config
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "ISSUE(i)" "|" "DONE(d)")
+          (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)")))
+
+  (setq org-todo-keyword-faces
+	'(("TODO" . (:foreground "red" :weight bold))
+          ("ISSUE" . (:foreground "orange" :weight bold))
+          ("DONE" . (:foreground "green" :weight bold))
+          ("WAITING" . (:foreground "blue" :weight bold))
+          ("CANCELLED" . (:foreground "gray" :weight bold)))))
+
+
+;; Linux 配置
+(setq-default org-agenda-files '("~/org/daily"))
 
 (provide 'init-org)

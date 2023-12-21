@@ -53,7 +53,7 @@
    '("h" . meow-left)
    '("H" . meow-left-expand)
    '("i" . meow-insert)
-   '("I" . meow-indent)
+   '("=" . meow-indent)
    '("O" . meow-open-above)
    '("j" . meow-next)
    '("J" . meow-next-expand)
