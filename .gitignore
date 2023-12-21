@@ -6,4 +6,5 @@
 !/.gitignore
 !/elfeed.org
 !/site-lisp/hl-defined/
+!/snippets
 /lisp/init-private.el
