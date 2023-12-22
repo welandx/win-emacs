@@ -7,4 +7,5 @@
 !/elfeed.org
 !/site-lisp/hl-defined/
 !/snippets
+!/README.org
 /lisp/init-private.el

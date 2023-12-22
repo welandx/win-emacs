@@ -154,7 +154,10 @@
   (when (and *is-a-win* (member "FantasqueSansM Nerd Font Mono" (font-family-list)))
     (setq nerd-icons-font-family "FantasqueSansM Nerd Font Mono")))
 (use-package yasnippet
-  :ensure t)
+  :ensure t
+  :bind
+  (:map org-mode-map
+	("M-/" . yas-expand)))
 
 ;; windows
 (when *is-a-win*
