@@ -127,6 +127,7 @@
         ("" "siunitx" t)
         ("" "physics2" t)
         ("" "kpfonts" t)))
+    (org-latex-preview-auto-mode 1)
     ))
 
 
@@ -147,6 +148,14 @@
   (require 'denote-journal-extras)
   (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
+(use-package tex
+  :ensure auctex
+  :config
+  (defun +rime-predicate-org-latex-mode-p ()
+  "If cursor is inside an org-mode's LaTeX fragment, macro or its arguments."
+  (and (derived-mode-p  'org-mode)
+       (or (texmathp)
+           (org-inside-latex-macro-p)))))
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
   :ensure t

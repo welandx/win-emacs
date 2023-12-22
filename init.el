@@ -157,7 +157,9 @@
   :ensure t
   :bind
   (:map org-mode-map
-	("M-/" . yas-expand)))
+	("M-/" . yas-expand))
+  :config
+  (yas-global-mode 1))
 
 ;; windows
 (when *is-a-win*

@@ -56,6 +56,7 @@
            rime-predicate-space-after-cc-p
            rime-predicate-current-uppercase-letter-p
            rime-predicate-tex-math-or-command-p
+	   +rime-predicate-org-latex-mode-p
            rime-predicate-after-alphabet-char-p
            rime-predicate-prog-in-code-p)))
 (provide 'init-sis)
