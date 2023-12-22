@@ -107,6 +107,29 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1))))
 
+
+;; Linux 配置
+(when *is-a-linux*
+  (setq-default org-agenda-files '("~/org/daily"))
+  (use-package org
+    :load-path "~/.emacs.d/site-lisp/org-mode/lisp"
+    :config
+    (with-eval-after-load 'org
+      (setq org-latex-preview-numbered t
+	    org-latex-preview-precompile nil)
+      (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
+	(plist-put (cdr pos) :image-converter '("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview -o %B-%%9p.svg %f"))))
+    (setq org-latex-packages-alist
+      '(("T1" "fontenc" t)
+        ("" "amsmath" t)
+        ("" "bm" t) ; Bold math required
+        ("" "mathtools" t)
+        ("" "siunitx" t)
+        ("" "physics2" t)
+        ("" "kpfonts" t)))
+    ))
+
+
 ;; 通用配置
 (use-package org-download
   :ensure t
@@ -186,8 +209,5 @@
           ("WAITING" . (:foreground "blue" :weight bold))
           ("CANCELLED" . (:foreground "gray" :weight bold)))))
 
-
-;; Linux 配置
-(setq-default org-agenda-files '("~/org/daily"))
 
 (provide 'init-org)
