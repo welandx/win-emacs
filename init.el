@@ -198,7 +198,7 @@
 (require-init 'init-private)
 (require-init 'init-news)
 (require-init 'init-highlight)
-
+(require-init 'init-dict)
 
 
 

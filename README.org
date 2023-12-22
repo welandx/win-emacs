@@ -1,2 +1,13 @@
 * Emacs
 win/linux/macos
+** Dependence
+- Macos 需要有 macsim, 否则应该禁用 init-sis 以避免 emacs 卡死
+- font 配置硬编码了几种 Nerd Fonts, 下载它们或修改为已有字体获得正常的 org-mode 显示
+- init-theme 使用了一个需要自行编译的外部程序 lmutracker, Macos 上应注意这点
+  该处路径也是硬编码
+- Mac blur 效果依赖 mac-port, 非 mac-port 可能启动不正常
+- ultra-scroll-mac 依赖 mac-port, 但不会引入错误
+- ripgrep
+- telega 依赖 tdlib, Mac 中 require 了这个包
+- Linux 输入法依赖 rime
+
