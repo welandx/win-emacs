@@ -127,7 +127,8 @@
         ("" "siunitx" t)
         ("" "physics2" t)
         ("" "kpfonts" t)))
-    (org-latex-preview-auto-mode 1)
+    :hook
+    (org-mode-hook . org-latex-preview-auto-mode)
     ))
 
 
@@ -160,7 +161,43 @@
 (use-package cdlatex
   :ensure t
   :diminish (org-cdlatex-mode)
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+  :bind
+  (:map org-mode-map
+	("C-c s" . cdlatex-environment))
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+  (setq cdlatex-math-symbol-alist '((97 ("\\alpha")) (65 ("\\forall" "\\aleph")) (98 ("\\beta") ("\\sim"))
+ (66 (#1="")) (99 (#1# #1# "\\cos")) (67 (#1# #1# "\\arccos"))
+ (100 ("\\delta" "\\partial")) (68 ("\\Delta" "\\nabla"))
+ (101 ("\\epsilon" "\\varepsilon" "\\exp"))
+ (69 ("\\exists" #1# "\\ln")) (102 ("\\phi" "\\varphi")) (70 (#1#))
+ (103 ("\\gamma" #1# "\\lg")) (71 ("\\Gamma" #1# "10^{?}"))
+ (104 ("\\eta" "\\hbar")) (72 (#1#)) (105 ("\\in" "\\imath"))
+ (73 (#1# "\\Im")) (106 (#1# "\\jmath")) (74 (#1#)) (107 ("\\kappa"))
+ (75 (#1#)) (108 ("\\lambda" "\\lim\\limits" "\\log")) (76 ("\\Lambda"))
+ (109 ("\\mu")) (77 (#1#)) (110 ("\\nu" #1# "\\ln"))
+ (78 ("\\nabla" #1# "\\exp")) (111 ("\\omega"))
+ (79 ("\\Omega" "\\mho")) (112 ("\\pi" "\\varpi")) (80 ("\\Pi"))
+ (113 ("\\theta" "\\vartheta")) (81 ("\\Theta"))
+ (114 ("\\rho" "\\varrho")) (82 (#1# "\\Re"))
+ (115 ("\\sigma" "\\varsigma" "\\sum\\limits"))
+ (83 ("\\Sigma" #1# "\\arcsin")) (116 ("\\tau" #1# "\\tan"))
+ (84 (#1# #1# "\\arctan")) (117 ("\\upsilon")) (85 ("\\Upsilon"))
+ (118 ("\\vee")) (86 ("\\Phi")) (119 ("\\xi")) (87 ("\\Xi"))
+ (120 ("\\chi")) (88 (#1#)) (121 ("\\psi")) (89 ("\\Psi"))
+ (122 ("\\zeta")) (90 (#1#)) (32 (#1#)) (48 ("\\emptyset")) (49 (#1#))
+ (50 (#1#)) (51 (#1#)) (52 (#1#)) (53 (#1#)) (54 (#1#)) (55 (#1#))
+ (56 ("\\infty")) (57 (#1#)) (33 ("\\neg")) (64 (#1#)) (35 (#1#))
+ (36 (#1#)) (37 (#1#)) (94 ("\\uparrow")) (38 ("\\wedge")) (63 (#1#))
+ (126 ("\\approx" "\\simeq")) (95 ("\\downarrow")) (43 ("\\cup"))
+ (45 ("\\leftrightarrow" "\\longleftrightarrow")) (42 ("\\times"))
+ (47 ("\\not")) (124 ("\\mapsto" "\\longmapsto")) (92 ("\\setminus"))
+ (34 (#1#)) (61 ("\\Leftrightarrow" "\\Longleftrightarrow"))
+ (40 ("\\langle")) (41 ("\\rangle"))
+ (91 ("\\Leftarrow" "\\Longleftarrow"))
+ (93 ("\\Rightarrow" "\\Longrightarrow")) (123 ("\\subset"))
+ (125 ("\\supset")) (60 ("\\leftarrow" "\\longleftarrow" "\\min"))
+ (62 ("\\rightarrow" "\\longrightarrow" "\\max")) (96 (#1#))
+ (39 ("\\prime")) (46 ("\\cdot")))))
 
 ;; To display LaTeX symbols as unicode
 (setq org-pretty-entities t)
