@@ -53,7 +53,7 @@
                 "while true; do /Users/mengzixian/Documents/mysh/lmutracker && sleep 1; done")
                #'auto-theme-mode-filter)))
       (and proc (kill-process proc)))))
-(auto-theme-mode 1)
+;; (auto-theme-mode 1)
 (when *is-a-mac*
  (set-face-background 'default "mac:windowBackgroundColor")
 (dolist (f (face-list)) (set-face-stipple f "alpha:60%"))
