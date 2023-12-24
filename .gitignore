@@ -8,4 +8,5 @@
 !/site-lisp/hl-defined/
 !/snippets
 !/README.org
+!/misc/
 /lisp/init-private.el
