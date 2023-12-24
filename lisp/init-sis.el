@@ -48,7 +48,7 @@
    (default-input-method "rime")
    (rime-show-candidate 'posframe)
    :config
-   (setq rime-user-data-dir "~/.local/share/fcitx5/rime/")
+   (setq rime-user-data-dir "~/.config/rime/")
    ;; 临时英文断言
    (setq rime-disable-predicates
          '(meow-normal-mode-p
