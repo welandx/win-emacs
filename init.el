@@ -201,6 +201,3 @@
 (require-init 'init-news)
 (require-init 'init-highlight)
 (require-init 'init-dict)
-
-
-
