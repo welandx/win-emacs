@@ -10,4 +10,6 @@ win/linux/macos
 - ripgrep
 - telega 依赖 tdlib, Mac 中 require 了这个包
 - Linux 输入法依赖 rime
-
+- Windows gui 效果需要 pop-select.dll
+- Linux & Macos org-mode 需要 org-mode version>=9.7
+- Linux emacs 应用了一个未合并的 patch [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2023-12/msg01338.html][link]], 但相关配置不会有影响
