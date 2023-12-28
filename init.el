@@ -183,7 +183,7 @@
   (require-init 'init-exec-path))
 ;; GNU/Linux
 (when *is-a-linux*
-  (setq-default org-directory "~/org")
+  (setq-default org-directory "~/notes")
   (load-theme 'ef-bio t))
 
 (require-init 'init-sis)
