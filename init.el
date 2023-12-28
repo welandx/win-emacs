@@ -169,6 +169,7 @@
   (load-theme 'wheatgrass t)
   (require 'init-gbk)
   (require-init 'init-win)
+  (setq org-directory "~/notes")
   )
 ;; Mac OS
 (when *is-a-mac*
