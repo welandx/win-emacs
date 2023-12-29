@@ -1,15 +1,19 @@
 * Emacs
 win/linux/macos
 ** Dependence
+
+*** 影响启动或卡死使用的依赖
+- Linux & Macos org-mode 需要 org-mode version>=9.7
 - Macos 需要有 macsim, 否则应该禁用 init-sis 以避免 emacs 卡死
+- Mac blur 效果依赖 mac-port, 非 mac-port 可能启动不正常
+- Windows gui 效果需要 pop-select.dll
+*** 最好解决或清理的依赖
+- ripgrep
+- Linux 输入法依赖 rime
 - font 配置硬编码了几种 Nerd Fonts, 下载它们或修改为已有字体获得正常的 org-mode 显示
+- ultra-scroll-mac 依赖 mac-port, 但不会引入错误
+*** 可以忽略的依赖
+- Linux emacs 应用了一个未合并的 patch [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2023-12/msg01338.html][link]], 但相关配置不会有影响
+- telega 依赖 tdlib, Mac 中 require 了这个包
 - init-theme 使用了一个需要自行编译的外部程序 lmutracker, Macos 上应注意这点
   该处路径也是硬编码
-- Mac blur 效果依赖 mac-port, 非 mac-port 可能启动不正常
-- ultra-scroll-mac 依赖 mac-port, 但不会引入错误
-- ripgrep
-- telega 依赖 tdlib, Mac 中 require 了这个包
-- Linux 输入法依赖 rime
-- Windows gui 效果需要 pop-select.dll
-- Linux & Macos org-mode 需要 org-mode version>=9.7
-- Linux emacs 应用了一个未合并的 patch [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2023-12/msg01338.html][link]], 但相关配置不会有影响
