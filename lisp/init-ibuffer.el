@@ -48,10 +48,16 @@
 
                  ("planner" (or (name . "^\\*Calendar\\*$")
                                 (name . "^diary$")
+				(name . "^journal$")
                                 (mode . muse-mode)
-                                (mode . org-mode)
                                 (mode . org-agenda-mode)))
 
+		 ("note" (or (mode . org-mode)))
+		 ("git" (or (mode . magit-mode)
+			    (name . "^magit$")))
+		 ("chat" (or (name . "^telega")))
+		 ("news" (or (mode . elfeed-search-mode)
+			     (mode . elfeed-show-mode)))
                  ("emacs" (or (name . "^\\*scratch\\*$")
                               (name . "^\\*Messages\\*$")))
 

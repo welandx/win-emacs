@@ -214,4 +214,11 @@ list is returned as-is."
     (setq expr (cadr expr)))
   expr)
 
+;; disable current theme before enable another theme
+(defun switch-theme (new-theme)
+  "禁用当前主题并加载新主题"
+  (interactive "SEnter theme name: ")
+  (disable-theme (car custom-enabled-themes))
+  (load-theme new-theme t))
+
 (provide 'init-lib)
