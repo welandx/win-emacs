@@ -25,4 +25,5 @@
 ;;                                                                     50 ; timer step
 ;;                                                                     233 86 120 ; r g b
 ;;                                                                     )))))))
+(setq system-time-locale "C")
 (provide 'init-win)
