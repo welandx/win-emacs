@@ -107,10 +107,13 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1))))
 
+;; win 配置
+(when *is-a-win*
+  (setq-default org-agenda-files '("~/notes/daily")))
 
 ;; Linux 配置
 (when *is-a-linux*
-  (setq-default org-agenda-files '("~/org/daily"))
+  (setq-default org-agenda-files '("~/notes/daily"))
   (use-package org
     :load-path "~/.emacs.d/site-lisp/org-mode/lisp"
     :config
