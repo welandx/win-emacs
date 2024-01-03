@@ -3,7 +3,7 @@
   (use-package org
     :load-path "~/kem/site-lisp/org-lisp"
     :init
-    (setq-default org-agenda-files '("~/Documents/org/dates/todolist.org"))
+    (setq-default org-agenda-files '("~/org/daily"))
     :bind
     ("C-c a" . org-agenda))
   (use-package mpvi
