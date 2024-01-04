@@ -1,5 +1,5 @@
 (set-language-environment "UTF-8")
-(prefer-coding-system 'gbk)
+(prefer-coding-system 'utf-8)
 (add-to-list 'process-coding-system-alist
              '("[rR][gG]" . (utf-8 . gbk-dos)))
 (setq-default buffer-file-coding-system 'utf-8-unix)
