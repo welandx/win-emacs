@@ -229,4 +229,20 @@ list is returned as-is."
          (pos (posn-point (event-start event))))
     (message "鼠标点击位置：窗口 %s，缓冲区 %s，位置 %s" window buffer pos)))
 
+;; toggle-one-window (from lazycat)
+(defvar toggle-one-window-window-configuration nil
+  "The window configuration use for `toggle-one-window'.")
+
+(defun toggle-one-window ()
+  "Toggle between window layout and one window."
+  (interactive)
+  (if (equal (length (cl-remove-if #'window-dedicated-p (window-list))) 1)
+      (if toggle-one-window-window-configuration
+          (progn
+            (set-window-configuration toggle-one-window-window-configuration)
+            (setq toggle-one-window-window-configuration nil))
+        (message "No other windows exist."))
+    (setq toggle-one-window-window-configuration (current-window-configuration))
+    (delete-other-windows)))
+
 (provide 'init-lib)

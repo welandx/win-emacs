@@ -173,13 +173,15 @@
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/tmp/" "/ssh:"))
   (recentf-mode 1))
+(global-set-key (kbd "<f9>") 'toggle-one-window)
 
 ;; windows
 (when *is-a-win*
   ;; (set-frame-font "FantasqueSansM Nerd Font Mono-16")
   (set-fontset-font t 'han "微软雅黑-13")
   ;; (load-theme 'yoshi t)
-  (load-theme 'wheatgrass t)
+  ;; (load-theme 'wheatgrass t)
+  (load-theme 'ef-melissa-light t)
   (require 'init-gbk)
   (require-init 'init-win)
   (setq org-directory "~/notes")
