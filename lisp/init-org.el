@@ -149,6 +149,8 @@
   ("d" . denote-journal-extras-new-or-existing-entry))
   :config
   (setq denote-directory org-directory)
+  (setq denote-rename-buffer-format "%t-%k")
+  (denote-rename-buffer-mode 1)
   (require 'denote-journal-extras)
   (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
@@ -239,7 +241,7 @@
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
-(setq org-ellipsis " 󰺠")
+(setq org-ellipsis " 󰁔")
 (setq org-hide-emphasis-markers nil)
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
