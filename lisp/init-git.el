@@ -3,4 +3,9 @@
   :bind
   ("C-c v" . magit))
 
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode))
+
 (provide 'init-git)

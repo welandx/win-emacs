@@ -10,5 +10,9 @@
                     (_ elem)))
                 mode-line-modes)
         ))
+(use-package sml-modeline
+  :ensure t
+  :config
+  (sml-modeline-mode))
 
 (provide 'init-modeline)
