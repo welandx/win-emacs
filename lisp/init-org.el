@@ -144,9 +144,11 @@
   ;; :vc (:fetcher "github" :repo "protesilaos/denote")
   :bind
   (:prefix-map denote-map
-               :prefix "C-c d"
-  ("f" . denote-open-or-create)
-  ("d" . denote-journal-extras-new-or-existing-entry))
+    :prefix "C-c d"
+    ("f" . denote-open-or-create)
+    ("d" . denote-journal-extras-new-or-existing-entry))
+  :hook
+  (org-mode . denote-rename-buffer-mode)
   :config
   (setq denote-directory org-directory)
   (setq denote-rename-buffer-format "%t-%k")

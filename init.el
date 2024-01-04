@@ -174,6 +174,7 @@
   (setq recentf-exclude '("/tmp/" "/ssh:"))
   (recentf-mode 1))
 (global-set-key (kbd "<f9>") 'toggle-one-window)
+(global-set-key (kbd "C-c n") 'revert-buffer)
 
 ;; windows
 (when *is-a-win*

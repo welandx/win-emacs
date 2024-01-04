@@ -1,7 +1,7 @@
 (use-package treesit-auto
   :ensure t
   :config
-  (treesit-auto-add-to-auto-mode-alist '("cpp" "yaml"))
+  (treesit-auto-add-to-auto-mode-alist '("cpp" "yaml" "rust"))
   (global-treesit-auto-mode)
   (setq treesit-font-lock-level 4))
 
