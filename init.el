@@ -177,7 +177,7 @@
   ;;   (set-frame-font "MonoLisa Nasy-15" t t))
   ;; (set-fontset-font "fontset-default" 'unicode "SF Pro")
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-  (setq-default org-directory "~/Documents/org")
+  (setq-default org-directory "~/org")
   (require-init 'init-telega)
   (require-init 'init-theme)
   (require-init 'init-osx-keys)
