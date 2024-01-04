@@ -119,9 +119,9 @@
     :config
     (with-eval-after-load 'org
       (setq org-latex-preview-numbered t
-	    org-latex-preview-precompile nil)
+            org-latex-preview-precompile nil)
       (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
-	(plist-put (cdr pos) :image-converter '("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview -o %B-%%9p.svg %f"))))
+        (plist-put (cdr pos) :image-converter '("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview -o %B-%%9p.svg %f"))))
     (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
@@ -144,7 +144,7 @@
   ;; :vc (:fetcher "github" :repo "protesilaos/denote")
   :bind
   (:prefix-map denote-map
-	       :prefix "C-c d"
+               :prefix "C-c d"
   ("f" . denote-open-or-create)
   ("d" . denote-journal-extras-new-or-existing-entry))
   :config
@@ -168,7 +168,7 @@
   :diminish (org-cdlatex-mode)
   :bind
   (:map org-mode-map
-	("C-c s" . cdlatex-environment))
+        ("C-c s" . cdlatex-environment))
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq cdlatex-math-symbol-alist '((97 ("\\alpha")) (65 ("\\forall" "\\aleph")) (98 ("\\beta") ("\\sim"))
  (66 (#1="")) (99 (#1# #1# "\\cos")) (67 (#1# #1# "\\arccos"))
@@ -250,11 +250,11 @@
   ("C-c a" . org-agenda)
   :config
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "ISSUE(i)" "|" "DONE(d)")
+        '((sequence "TODO(t)" "ISSUE(i)" "|" "DONE(d)")
           (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)")))
 
   (setq org-todo-keyword-faces
-	'(("TODO" . (:foreground "red" :weight bold))
+        '(("TODO" . (:foreground "red" :weight bold))
           ("ISSUE" . (:foreground "orange" :weight bold))
           ("DONE" . (:foreground "green" :weight bold))
           ("WAITING" . (:foreground "blue" :weight bold))

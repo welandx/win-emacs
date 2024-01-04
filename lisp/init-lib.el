@@ -245,4 +245,8 @@ list is returned as-is."
     (setq toggle-one-window-window-configuration (current-window-configuration))
     (delete-other-windows)))
 
+(defun tab-to-space ()
+  (interactive)
+  (untabify (point-min) (point-max)))
+
 (provide 'init-lib)

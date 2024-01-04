@@ -117,7 +117,7 @@
 (use-package avy
   :bind
   (:map meow-normal-state-keymap
-	("F" . avy-goto-char)))
+        ("F" . avy-goto-char)))
 (use-package ace-window
   :ensure t
   :init
@@ -162,7 +162,7 @@
   :ensure t
   :bind
   (:map org-mode-map
-	("M-/" . yas-expand))
+        ("M-/" . yas-expand))
   :config
   (yas-global-mode 1))
 (use-package recentf

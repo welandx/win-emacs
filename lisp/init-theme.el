@@ -11,8 +11,8 @@
   (let ((current-light-sensor-reading (string-to-number output))
         (current-theme (car custom-enabled-themes))
         (dark-theme 'ef-night)
-	(sub-dark-theme 'ef-autumn)
-	(sub-light-theme 'ef-spring)
+        (sub-dark-theme 'ef-autumn)
+        (sub-light-theme 'ef-spring)
         (light-theme 'ef-day))
     (cond
      ;; ((/= (length output) 10))      ; printf("%8lld", values[0]);
@@ -21,20 +21,20 @@
            (disable-theme current-theme)
            (enable-theme dark-theme))
           ((and (and (>= current-light-sensor-reading 65)
-		     (< current-light-sensor-reading 85))
+                     (< current-light-sensor-reading 85))
                 (not (eq current-theme sub-dark-theme)))
            (disable-theme current-theme)
            (enable-theme sub-dark-theme))
-	  ((and (and (>= current-light-sensor-reading 100)
-		     (< current-light-sensor-reading 120))
+          ((and (and (>= current-light-sensor-reading 100)
+                     (< current-light-sensor-reading 120))
                 (not (eq current-theme sub-light-theme)))
            (disable-theme current-theme)
            (enable-theme sub-light-theme))
-	  ((and (>= current-light-sensor-reading 135)
+          ((and (>= current-light-sensor-reading 135)
                 (not (eq current-theme light-theme)))
            (disable-theme current-theme)
            (enable-theme light-theme))
-	  )))
+          )))
 
 (define-minor-mode auto-theme-mode
   "Automatically set Emacs theme based on ambient light."
@@ -55,11 +55,11 @@
       (and proc (kill-process proc)))))
 ;; (auto-theme-mode 1)
 (when *is-a-mac*
- (set-face-background 'default "mac:windowBackgroundColor")
-(dolist (f (face-list)) (set-face-stipple f "alpha:60%"))
-(defface my/default-blurred
-  '((t :inherit 'default :stipple "alpha:60%"))
-   "Like 'default but blurred."
-   :group 'my)
-(setq face-remapping-alist (append face-remapping-alist '((default my/default-blurred)))))
+  (set-face-background 'default "mac:windowBackgroundColor")
+  (dolist (f (face-list)) (set-face-stipple f "alpha:60%"))
+  (defface my/default-blurred
+    '((t :inherit 'default :stipple "alpha:60%"))
+    "Like 'default but blurred."
+    :group 'my)
+  (setq face-remapping-alist (append face-remapping-alist '((default my/default-blurred)))))
 (provide 'init-theme)
