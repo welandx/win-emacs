@@ -221,4 +221,12 @@ list is returned as-is."
   (disable-theme (car custom-enabled-themes))
   (load-theme new-theme t))
 
+(defun my-mouse-click-handler (event)
+  "鼠标点击获取信息"
+  (interactive "e")
+  (let* ((window (posn-window (event-start event)))
+         (buffer (window-buffer window))
+         (pos (posn-point (event-start event))))
+    (message "鼠标点击位置：窗口 %s，缓冲区 %s，位置 %s" window buffer pos)))
+
 (provide 'init-lib)

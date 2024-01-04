@@ -39,6 +39,9 @@
 (setq display-time-24hr-format t)
 (display-time-mode 1)
 (display-battery-mode 1)
+(setq lisp-indent-offset 2)
+(setq-default indent-tabs-mode nil)
+
 ;; 加载 lib
 (require 'init-lib)
 
@@ -117,6 +120,8 @@
 	("F" . avy-goto-char)))
 (use-package ace-window
   :ensure t
+  :init
+  (require 'ace-window)
   :bind
   ("C-c w" . ace-window))
 (use-package consult
@@ -160,6 +165,14 @@
 	("M-/" . yas-expand))
   :config
   (yas-global-mode 1))
+(use-package recentf
+  :ensure nil
+  :bind
+  ("C-c o" . recentf-open)
+  :config
+  (setq recentf-max-saved-items 1000)
+  (setq recentf-exclude '("/tmp/" "/ssh:"))
+  (recentf-mode 1))
 
 ;; windows
 (when *is-a-win*
@@ -202,7 +215,5 @@
 (require-init 'init-news)
 (require-init 'init-highlight)
 (require-init 'init-dict)
-
 (require-init 'init-copilot)
 (require-init 'init-tab)
-(setq lisp-indent-offset 2)
