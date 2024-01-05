@@ -138,7 +138,9 @@
 ;; 通用配置
 (use-package org-download
   :ensure t
-  :after org)
+  :after org
+  :config
+  (setq-default org-download-image-dir "~/Pictures/org"))
 (use-package denote
   :ensure t
   ;; :vc (:fetcher "github" :repo "protesilaos/denote")
