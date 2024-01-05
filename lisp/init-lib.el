@@ -228,7 +228,7 @@ list is returned as-is."
          (buffer (window-buffer window))
          (pos (posn-point (event-start event))))
     (message "鼠标点击位置：窗口 %s，缓冲区 %s，位置 %s" window buffer pos)))
-
+;; (local-set-key (kbd "<mouse-1>") 'my-mouse-click-handler)
 ;; toggle-one-window (from lazycat)
 (defvar toggle-one-window-window-configuration nil
   "The window configuration use for `toggle-one-window'.")
