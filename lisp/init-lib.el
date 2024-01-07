@@ -256,4 +256,27 @@ list is returned as-is."
   (interactive)
   (untabify (point-min) (point-max)))
 
+(defun org-screenshot-on-windows10 ()
+  (interactive)
+  (setq full-file-name (file-name-sans-extension (file-name-nondirectory buffer-file-name)))
+  ;; 如果文件名的长度小于14,放到mainImage文件夹下面
+  (if (< (length full-file-name) 14)
+      (setq before-file-name-part "main")
+    ;;否则,判断文件中是否含有中文(专门给org roam做的优化,不通用,但是也不想改了)
+    (if (string-match "\\cc" full-file-name)
+        (setq before-file-name-part  (substring (file-name-sans-extension (file-name-nondirectory buffer-file-name)) 0 14))
+      (setq before-file-name-part (substring (file-name-sans-extension (file-name-nondirectory buffer-file-name)) 15))))
+
+  (setq imagefile (concat "./" before-file-name-part "Image/"))
+  (unless (file-exists-p imagefile)
+    (make-directory imagefile))
+  (setq filename (concat (make-temp-name (concat imagefile
+                                                 "_"
+                                                 (format-time-string "%Y%m%d_%H%M%S_")))
+                         ".png"))
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('"
+                         filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+  (insert (concat "[[file:" filename "]]"))
+  (org-display-inline-images))
+
 (provide 'init-lib)
