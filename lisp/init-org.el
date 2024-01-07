@@ -159,14 +159,14 @@
   (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
 (use-package tex
-  :defer 2
+  :defer 0.5 ; rime need texmathp, so enable it before use rime in org file
   :ensure auctex
   :config
   (defun +rime-predicate-org-latex-mode-p ()
-  "If cursor is inside an org-mode's LaTeX fragment, macro or its arguments."
-  (and (derived-mode-p  'org-mode)
-       (or (texmathp)
-           (org-inside-latex-macro-p)))))
+    "If cursor is inside an org-mode's LaTeX fragment, macro or its arguments."
+    (and (derived-mode-p  'org-mode)
+      (or (texmathp)
+        (org-inside-latex-macro-p)))))
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
   :after org
