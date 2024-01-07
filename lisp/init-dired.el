@@ -1,5 +1,5 @@
 (use-package dired
-  :demand t
+  :defer t
   :hook (dired-mode . dired-hide-details-mode)
   :config
   (when *is-a-win*

@@ -1,4 +1,5 @@
 (defun text-mode-hook-setup ()
+  (interactive)
   ;; make `company-backends' local is critcal
   ;; or else, you will have completion in every major mode, that's very annoying!
   (make-local-variable 'company-backends)
@@ -23,6 +24,7 @@
     (message "company-ispell enabled!"))))
 
 (use-package company-english-helper
+  :defer 2
   :vc (:fetcher "github" :repo "manateelazycat/company-english-helper"))
 
 (provide 'init-dict)

@@ -159,6 +159,7 @@
   (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
 (use-package tex
+  :defer 2
   :ensure auctex
   :config
   (defun +rime-predicate-org-latex-mode-p ()
@@ -168,6 +169,7 @@
            (org-inside-latex-macro-p)))))
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
+  :after org
   :ensure t
   :diminish (org-cdlatex-mode)
   :bind

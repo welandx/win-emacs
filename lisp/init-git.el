@@ -4,6 +4,7 @@
   ("C-c v" . magit))
 
 (use-package diff-hl
+  :defer 0.1
   :ensure t
   :config
   (global-diff-hl-mode))

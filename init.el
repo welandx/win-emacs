@@ -1,17 +1,59 @@
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil)
-  (package-initialize))
+(defconst *is-a-win* (eq system-type 'windows-nt))
+(defconst *is-a-mac* (eq system-type 'darwin))
+(defconst *is-a-linux* (eq system-type 'gnu/linux))
+(when (file-exists-p "~/.emacs.d/elpa/emacs-gc-stats-1.4.2")
+  (add-to-list 'load-path "~/.emacs.d/elpa/emacs-gc-stats-1.4.2")
+  (require 'emacs-gc-stats)
+  (setq emacs-gc-stats-remind t)
+  (emacs-gc-stats-mode +1))
+
+(defun my-initialize-package ()
+  "Package loading optimization.  No need to activate all the packages so early."
+  ;; @see https://www.gnu.org/software/emacs/news/NEWS.27.1
+  ;; ** Installed packages are now activated *before* loading the init file.
+  ;; As a result of this change, it is no longer necessary to call
+  ;; `package-initialize' in your init file.
+
+  ;; Previously, a call to `package-initialize' was automatically inserted
+  ;; into the init file when Emacs was started.  This call can now safely
+  ;; be removed.  Alternatively, if you want to ensure that your init file
+  ;; is still compatible with earlier versions of Emacs, change it to:
+
+  ;; However, if your init file changes the values of `package-load-list'
+  ;; or `package-user-dir', or sets `package-enable-at-startup' to nil then
+  ;; it won't work right without some adjustment:
+  ;; - You can move that code to the early init file (see above), so those
+  ;;   settings apply before Emacs tries to activate the packages.
+  ;; - You can use the new `package-quickstart' so activation of packages
+  ;;   does not need to pay attention to `package-load-list' or
+  ;;   `package-user-dir' any more.
+  ;; "package-quickstart.el" converts path in `load-path' into
+  ;; os dependent path, make it impossible to share same emacs.d between
+  ;; Windows and Cygwin.
+  (unless (or *is-a-win*)
+    ;; you need run `M-x package-quickstart-refresh' at least once
+    ;; to generate file "package-quickstart.el'.
+    ;; It contains the `autoload' statements for all packages.
+    (setq package-quickstart t))
+
+  ;; esup need call `package-initialize'
+  ;; @see https://github.com/jschaf/esup/issues/84
+  (when (or (featurep 'esup-child)
+            (fboundp 'profile-dotemacs)
+            (daemonp)
+          noninteractive)
+    (setq package-enable-at-startup nil)
+    (package-initialize)))
+
+(my-initialize-package)
 
 (let* ((minver "29"))
   (when (version< emacs-version minver)
     (unless (package-installed-p 'use-package)
       (package-install "use-package"))))
-(defconst *is-a-mac* (eq system-type 'darwin))
-(defconst *is-a-win* (eq system-type 'windows-nt))
-(defconst *is-a-linux* (eq system-type 'gnu/linux))
 ;; 一些默认设置
 (setq default-directory "~/")
 (menu-bar-mode 0)
@@ -153,6 +195,7 @@
   :ensure t)
 (use-package nerd-icons
   :ensure t
+  :defer 1
   :config
   (when (and *is-a-mac* (member "Symbols Nerd Font Mono" (font-family-list)))
     (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
@@ -220,3 +263,7 @@
 (require-init 'init-dict)
 (require-init 'init-copilot)
 (require-init 'init-tab)
+(message "*** Emacs loaded in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time (time-subtract after-init-time before-init-time)))
+           gcs-done)
