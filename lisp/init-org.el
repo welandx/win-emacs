@@ -233,6 +233,12 @@
   (setq org-modern-timestamp nil)
   :config (global-org-modern-mode 1))
 
+(use-package org-margin
+  :disabled
+  :if *is-a-linux*
+  :defer t
+  :vc (:fetcher "github" :repo "rougier/org-margin"))
+
 (defun my-iconify-org-buffer ()
   (progn
     (push '(":PROPERTIES:" . ?󰑹) prettify-symbols-alist)
