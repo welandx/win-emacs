@@ -267,4 +267,10 @@
 (message "*** Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
                    (float-time (time-subtract after-init-time before-init-time)))
-           gcs-done)
+  gcs-done)
+
+(add-hook 'window-setup-hook
+  (lambda ()
+    (when (not window-system)
+      (load-theme 'modus-vivendi t)
+      (set-background-color "nil"))))
