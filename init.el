@@ -212,7 +212,7 @@
   :ensure nil
   :bind
   ("C-c o" . recentf-open)
-  :config
+  :init
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/tmp/" "/ssh:"))
   (recentf-mode 1))
