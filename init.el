@@ -245,7 +245,7 @@
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
-  (load-theme 'ef-bio t))
+  (load-theme 'ef-frost t))
 
 (require-init 'init-sis)
 (require-init 'init-org)
