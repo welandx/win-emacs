@@ -279,4 +279,8 @@ list is returned as-is."
   (insert (concat "[[file:" filename "]]"))
   (org-display-inline-images))
 
+(defun echo-current-theme ()
+  (interactive)
+  (message "Current theme: %s" (car custom-enabled-themes)))
+
 (provide 'init-lib)
