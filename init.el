@@ -61,7 +61,6 @@
 (scroll-bar-mode 0)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
-(setq backup-by-copying t)
 (setq create-lockfiles nil)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
@@ -110,10 +109,18 @@
       :ensure t
       :config
       (load-theme 'modus-operandi-tritanopia t))))
-(electric-pair-mode 1)
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
+(add-hook 'conf-mode-hook 'electric-pair-local-mode)
 (use-package company
   :ensure t
   :config
+  (define-key company-active-map (kbd "TAB") nil)
+  (define-key company-active-map [tab] nil)
+  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+  (define-key company-active-map [tab] 'company-complete-selection)
+  (define-key company-mode-map (kbd "M-n") 'company-complete-common)
+  (define-key company-active-map [return] nil)
+  (define-key company-active-map (kbd "RET") nil)
   (global-company-mode 1))
 (use-package fussy
   :ensure t
@@ -245,7 +252,7 @@
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
-  (load-theme 'ef-frost t))
+  (load-theme 'ef-elea-dark t))
 
 (require-init 'init-sis)
 (require-init 'init-org)
@@ -264,6 +271,58 @@
 (require-init 'init-dict)
 (require-init 'init-copilot)
 (require-init 'init-tab)
+(require-init 'init-tags)
+
+(use-package keyfreq
+  :ensure t
+  :config
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
+(setq-default
+
+  warning-suppress-log-types '((comp))
+
+  ;; Backup setups
+  ;; We use temporary directory /tmp for backup files
+  ;; More versions should be saved
+  backup-directory-alist `((".*" . ,temporary-file-directory))
+  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+  backup-by-copying t
+  delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t
+
+  ;; Don't wait for keystrokes display
+  echo-keystrokes 0.01
+
+  ;; Disable margin for overline and underline
+  overline-margin 0
+  underline-minimum-offset 0
+
+  ;; Better scroll behavior
+  mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))
+  mouse-wheel-progressive-speed nil
+
+  ;; Disable copy region blink
+  copy-region-blink-delay 0
+
+  ;; Use short answer when asking yes or no
+  read-answer-short t
+
+  ;; Mouse yank at current point
+  mouse-yank-at-point t
+
+  ;; DWIM target for dired
+  ;; Automatically use another dired buffer as target for copy/rename
+  dired-dwim-target t
+
+  ;; Don't echo multiline eldoc
+  eldoc-echo-area-use-multiline-p nil)
+
+(global-subword-mode 1)
+
+;; startup done
 (message "*** Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
                    (float-time (time-subtract after-init-time before-init-time)))
