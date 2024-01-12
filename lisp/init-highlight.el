@@ -5,6 +5,12 @@
   (global-treesit-auto-mode)
   (setq treesit-font-lock-level 4))
 
+(use-package rust-mode
+  :ensure t)
+
+(use-package markdown-mode
+  :ensure t)
+
 ;; 在 org-src-block 使用 ts-mode 高亮
 (with-eval-after-load 'org
   (defun my/remap-mode (mode)

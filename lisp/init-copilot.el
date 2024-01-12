@@ -7,12 +7,12 @@
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
 
-(use-package markdown-mode
-  :ensure t)
+
 (use-package gptel
   :vc (:fetcher "github" :repo "karthink/gptel")
   :defer 1
   :config
+  (setq-default gptel-default-mode 'org-mode)
   (setq-default gptel-backend
     (gptel-make-openai "openai-api"
       :host "api.chatanywhere.tech"
