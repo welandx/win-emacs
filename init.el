@@ -60,7 +60,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode 0)
 (setq make-backup-files nil)
-(setq auto-save-default nil)
+;; (setq auto-save-default nil)
 (setq create-lockfiles nil)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
@@ -79,7 +79,12 @@
 (load custom-file t)
 (setq display-time-24hr-format t)
 (display-time-mode 1)
-(display-battery-mode 1)
+(if *is-a-linux*
+  (when
+    (not (string=  "N/A"
+           (cdr (car (battery-linux-sysfs)))))
+    (display-battery-mode 1))
+  (display-battery-mode 1))
 (setq lisp-indent-offset 2)
 (setq-default indent-tabs-mode nil)
 
