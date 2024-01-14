@@ -121,6 +121,7 @@
   :hook
   (prog-mode . company-mode)
   (org-mode . company-mode)
+  (text-mode . company-mode)
   :config
   (define-key company-active-map (kbd "TAB") nil)
   (define-key company-active-map [tab] nil)
@@ -283,6 +284,20 @@
 (use-package keyfreq
   :ensure t
   :config
+  (setq keyfreq-excluded-commands '(self-insert-command
+                                     pixel-scroll-precision
+                                     meow-keypad
+                                     org-self-insert-command
+                                     meow-left
+                                     backward-delete-char-untabify
+                                     meow-next
+                                     meow-prev
+                                     mouse-set-point
+                                     meow-insert-exit
+                                     meow-right
+                                     meow-keypad-self-insert
+                                     mouse-drag-region
+                                     delete-backward-char))
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
 (setq-default
@@ -328,6 +343,8 @@
   eldoc-echo-area-use-multiline-p nil)
 
 (global-subword-mode 1)
+
+(global-set-key (kbd "C-'") 'set-mark-command)
 
 (require-init 'init-pyim)
 
