@@ -236,6 +236,7 @@ list is returned as-is."
          (pos (posn-point (event-start event))))
     (message "鼠标点击位置：窗口 %s，缓冲区 %s，位置 %s" window buffer pos)))
 ;; (global-set-key (kbd "<mouse-1>") 'my-mouse-click-handler)
+
 ;; toggle-one-window (from lazycat)
 (defvar toggle-one-window-window-configuration nil
   "The window configuration use for `toggle-one-window'.")
@@ -243,13 +244,20 @@ list is returned as-is."
 (defun toggle-one-window ()
   "Toggle between window layout and one window."
   (interactive)
+  ;; (if visual-fill-column-center-text
+  ;;   (setq-local visual-fill-column-center-text nil)
+  ;;   (setq-local visual-fill-column-center-text t))
+  ;; (if visual-fill-column-mode
+  ;;   (visual-fill-column-mode -1)
+  ;;   (visual-fill-column-mode 1))
   (if (equal (length (cl-remove-if #'window-dedicated-p (window-list))) 1)
-      (if toggle-one-window-window-configuration
-          (progn
-            (set-window-configuration toggle-one-window-window-configuration)
-            (setq toggle-one-window-window-configuration nil))
-        (message "No other windows exist."))
-    (setq toggle-one-window-window-configuration (current-window-configuration))
+    (if toggle-one-window-window-configuration
+      (progn
+        (set-window-configuration toggle-one-window-window-configuration)
+        (setq toggle-one-window-window-configuration nil))
+      (message "No other windows exist."))
+    (progn
+      (setq toggle-one-window-window-configuration (current-window-configuration)))
     (delete-other-windows)))
 
 (defun tab-to-space ()

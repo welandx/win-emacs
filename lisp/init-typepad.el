@@ -8,4 +8,13 @@
 (add-hook 'typepad-mode-hook 'visual-fill-column-mode)
 (add-hook 'typepad-readonly-mode-hook 'visual-fill-column-mode)
 
+(use-package visual-fill-column
+  :custom
+  (visual-fill-column-center-text t)
+  (visual-fill-column-width 120)
+  :hook
+  (prog-mode . visual-fill-column-mode)
+  (magit-mode . visual-fill-column-mode)
+  )
 
+(provide 'init-typepad)

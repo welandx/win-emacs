@@ -79,12 +79,12 @@
 (load custom-file t)
 (setq display-time-24hr-format t)
 (display-time-mode 1)
+(display-battery-mode 1)
 (if *is-a-linux*
   (when
     (not (string=  "N/A"
            (cdr (car (battery-linux-sysfs)))))
-    (display-battery-mode 1))
-  (display-battery-mode 1))
+    (display-battery-mode -1)))
 (setq lisp-indent-offset 2)
 (setq-default indent-tabs-mode nil)
 
@@ -232,6 +232,7 @@
   (setq recentf-exclude '("/tmp/" "/ssh:"))
   (recentf-mode 1))
 (global-set-key (kbd "<f9>") 'toggle-one-window)
+(global-set-key (kbd "<f8>") 'scratch-buffer)
 (global-set-key (kbd "C-c n") 'revert-buffer)
 
 ;; windows
@@ -346,7 +347,11 @@
 
 (global-set-key (kbd "C-'") 'set-mark-command)
 
-(require-init 'init-pyim)
+(if *is-a-linux*
+  (run-with-idle-timer 1 nil
+    (lambda ()
+      (require-init 'init-pyim)
+      (require-init 'init-typepad))))
 
 ;; startup done
 (message "*** Emacs loaded in %s with %d garbage collections."
