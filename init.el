@@ -324,6 +324,8 @@
 
 (global-subword-mode 1)
 
+(require-init 'init-pyim)
+
 ;; startup done
 (message "*** Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
