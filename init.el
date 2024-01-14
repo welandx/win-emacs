@@ -113,15 +113,17 @@
 (add-hook 'conf-mode-hook 'electric-pair-local-mode)
 (use-package company
   :ensure t
+  :hook
+  (prog-mode . company-mode)
+  (org-mode . company-mode)
   :config
   (define-key company-active-map (kbd "TAB") nil)
   (define-key company-active-map [tab] nil)
   (define-key company-active-map (kbd "TAB") 'company-complete-selection)
   (define-key company-active-map [tab] 'company-complete-selection)
-  (define-key company-mode-map (kbd "M-n") 'company-complete-common)
+  (define-key company-active-map (kbd "M-n") 'company-complete-selection)
   (define-key company-active-map [return] nil)
-  (define-key company-active-map (kbd "RET") nil)
-  (global-company-mode 1))
+  (define-key company-active-map (kbd "RET") nil))
 (use-package fussy
   :ensure t
   :config
