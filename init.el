@@ -82,8 +82,8 @@
 (display-battery-mode 1)
 (if *is-a-linux*
   (when
-    (not (string=  "N/A"
-           (cdr (car (battery-linux-sysfs)))))
+    (string=  "N/A"
+      (cdr (car (battery-linux-sysfs))))
     (display-battery-mode -1)))
 (setq lisp-indent-offset 2)
 (setq-default indent-tabs-mode nil)
@@ -298,9 +298,12 @@
                                      meow-right
                                      meow-keypad-self-insert
                                      mouse-drag-region
+                                     org-delete-backward-char
+                                     meow-insert
                                      delete-backward-char))
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
+
 (setq-default
 
   warning-suppress-log-types '((comp))
@@ -364,3 +367,4 @@
     (when (not window-system)
       (load-theme 'modus-vivendi t)
       (set-background-color "nil"))))
+(put 'erase-buffer 'disabled nil)

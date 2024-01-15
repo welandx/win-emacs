@@ -244,12 +244,6 @@ list is returned as-is."
 (defun toggle-one-window ()
   "Toggle between window layout and one window."
   (interactive)
-  ;; (if visual-fill-column-center-text
-  ;;   (setq-local visual-fill-column-center-text nil)
-  ;;   (setq-local visual-fill-column-center-text t))
-  ;; (if visual-fill-column-mode
-  ;;   (visual-fill-column-mode -1)
-  ;;   (visual-fill-column-mode 1))
   (if (equal (length (cl-remove-if #'window-dedicated-p (window-list))) 1)
     (if toggle-one-window-window-configuration
       (progn

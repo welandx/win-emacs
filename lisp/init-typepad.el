@@ -2,7 +2,7 @@
 
 (require 'typepad)
 
-(setq typepad-text-path (concat user-emacs-directory "site-lisp/TypePad/top500.txt"))
+(setq typepad-text-path (concat user-emacs-directory "site-lisp/TypePad/txt"))
 
 ;; enable visual-fill-column-mode in typepad-mode and typepad-readonly-mode
 (add-hook 'typepad-mode-hook 'visual-fill-column-mode)
@@ -11,7 +11,7 @@
 (use-package visual-fill-column
   :custom
   (visual-fill-column-center-text t)
-  (visual-fill-column-width 120)
+  (visual-fill-column-width 100)
   :hook
   (prog-mode . visual-fill-column-mode)
   (magit-mode . visual-fill-column-mode)
