@@ -21,8 +21,9 @@
   ("C-<tab>" . tab-next))
 
 (use-package workgroups2
-  :disabled
   :ensure t
-  :defer 2)
+  :defer 2
+  :config
+  (add-to-list 'wg-major-mode-excludes 'sort-tab-major-mode))
 
 (provide 'init-tab)

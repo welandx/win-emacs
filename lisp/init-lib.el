@@ -288,6 +288,10 @@ list is returned as-is."
 (defun buffer-mode (buffer-or-string)
   "Returns the major mode associated with a buffer."
   (with-current-buffer buffer-or-string
-     major-mode))
+    major-mode))
+
+(defun print-swb ()
+  (interactive)
+  (message "%d" (string-width (buffer-string))))
 
 (provide 'init-lib)
