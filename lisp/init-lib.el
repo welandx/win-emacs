@@ -291,4 +291,9 @@ list is returned as-is."
   (interactive)
   (message "Current theme: %s" (car custom-enabled-themes)))
 
+(defun buffer-mode (buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (with-current-buffer buffer-or-string
+     major-mode))
+
 (provide 'init-lib)
