@@ -261,7 +261,8 @@
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
-  (load-theme 'ef-elea-dark t))
+  (load-theme 'ef-elea-dark t)
+  (require-init 'init-telega))
 
 (require-init 'init-sis)
 (require-init 'init-org)
@@ -351,7 +352,7 @@
 (global-set-key (kbd "C-'") 'set-mark-command)
 
 (if *is-a-linux*
-  (run-with-idle-timer 1 nil
+  (run-with-idle-timer 0.1 nil
     (lambda ()
       (require-init 'init-pyim)
       (require-init 'init-typepad))))
@@ -368,3 +369,4 @@
       (load-theme 'modus-vivendi t)
       (set-background-color "nil"))))
 (put 'erase-buffer 'disabled nil)
+(put 'list-timers 'disabled nil)
