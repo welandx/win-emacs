@@ -19,7 +19,10 @@
     "判断是否是evil的normal模式，如果是则返回true.
 这个函数用于：`pyim-english-input-switch-functions'."
     (meow-normal-mode-p))
-  (setq-default pyim-punctuation-translate-p '(auto yes no))
+  ;; (setq-default pyim-punctuation-translate-p '(auto yes no))
+  (add-hook 'typepad-mode-hook 'pyim-punctuation-toggle)
   (setq-default pyim-english-input-switch-functions
-    '(pyim-probe-evil-normal-mode)))
+    '(pyim-probe-evil-normal-mode
+       pyim-probe-auto-english
+       pyim-probe-program-mode)))
 (provide 'init-pyim)

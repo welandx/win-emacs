@@ -34,6 +34,6 @@
    ;; `citre-mode' is automatically enabled.  If you only want this to work for
    ;; certain modes (like `prog-mode'), set it like this.
     citre-auto-enable-citre-mode-modes '(prog-mode))
-  (with-eval-after-load 'citre
-    (setq xref-backend-functions '(elisp--xref-backend)))
+  (setq-default citre-enable-capf-integration nil
+    citre-enable-xref-integration nil)
   )

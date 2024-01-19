@@ -261,7 +261,8 @@
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
-  (load-theme 'ef-elea-dark t)
+  ;; (load-theme 'ef-elea-dark t)
+  (load-theme 'modus-operandi-deuteranopia t)
   (require-init 'init-telega))
 
 (require-init 'init-sis)
@@ -356,6 +357,11 @@
     (lambda ()
       (require-init 'init-pyim)
       (require-init 'init-typepad))))
+
+(add-to-list 'auto-mode-alist '("\\Eask\\'" . lisp-mode))
+
+(with-eval-after-load 'org-agenda
+  (add-hook 'org-agenda-mode-hook 'hl-line-mode))
 
 ;; startup done
 (message "*** Emacs loaded in %s with %d garbage collections."

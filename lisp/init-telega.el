@@ -11,8 +11,8 @@
     (telega-notifications-mode -1)
     (telega-notifications-mode 1)))
   (with-eval-after-load 'telega
-    (add-hook 'telega-chat-mode-hook
-      (lambda () (setq truncate-lines t)))
+    ;; (add-hook 'telega-chat-mode-hook
+    ;;   (lambda () (setq truncate-lines t)))
     (setq telega-symbols-emojify (assq-delete-all 'checkmark telega-symbols-emojify))
     (setq telega-symbols-emojify (assq-delete-all 'heavy-checkmark telega-symbols-emojify))
     (setq telega-symbol-checkmark (nerd-icons-codicon "nf-cod-check"))
@@ -214,7 +214,7 @@
 
     ))
 (with-eval-after-load 'telega
-    ;; 复制图片
+  ;; 复制图片
   (defun z/telega-save-file-to-clipboard (msg)
     "Save file at point to clipboard.
 NOTE: macOS only."
@@ -230,5 +230,9 @@ NOTE: macOS only."
             (let* ((fpath (telega--tl-get dfile :local :path)))
               (shell-command (format "osascript -e 'set the clipboard to POSIX file \"%s\"'" fpath))
               (message (format "File saved to clipboard: %s" fpath))))))))
-  (define-key telega-msg-button-map (kbd "C") 'z/telega-save-file-to-clipboard))
+  (define-key telega-msg-button-map (kbd "C") 'z/telega-save-file-to-clipboard)
+  (setq telega-emoji-font-family "Noto Color Emoji")
+  (setq telega-emoji-use-images nil))
+
+
 (provide 'init-telega)
