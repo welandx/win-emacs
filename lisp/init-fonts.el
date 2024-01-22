@@ -10,7 +10,8 @@
 
 (defcustom minemacs-fonts-plist
   '(:default
-    ((:family "FantasqueSansM Nerd Font Mono" :height 160)
+     ((:family "SauceCodePro Nerd Font Mono" :height 160)
+       (:family "FantasqueSansM Nerd Font Mono" :height 160)
      (:family "SauceCodePro Nerd Font" :height 160)
      (:family "MonoLisa Nasy" :height 150)
      (:family "Agave Nerd Font Mono" :height 150)
@@ -68,11 +69,20 @@
     ;; FIXME Math
     ;; :mathematical
     ;; ((:family "Latin Modern Math" :scale 0.8))
-    ;; Chinese script
-    :han
-     ((:family "LXGW WenKai Screen" :scale 0.9)
+     ;; Chinese script
+     :cjk-misc
+     ((:family "Tsangerjinkai05" :scale 1.0)
+       (:family "LXGW WenKai Screen" :scale 0.9)
        (:family "霞鹜文楷 屏幕阅读版" :scale 0.9)
        (:family "LXGW WenKai GB Screen R" :scale 0.9)
+       (:family "TsangerYangMingTi" :scale 1.0))
+    :han
+     ( (:family "LXGW WenKai" :scale 1.0)
+       (:family "TsangerJinKai05" :scale 1.0)
+       (:family "LXGW WenKai Screen" :scale 0.9)
+       (:family "霞鹜文楷 屏幕阅读版" :scale 0.9)
+       (:family "LXGW WenKai GB Screen R" :scale 0.9)
+       (:family "TsangerYangMingTi" :scale 1.0)
      (:family "LXGW Neo Xihei" :scale 1.3)
      (:family "WenQuanYi Micro Hei Mono" :scale 1.3)
      (:family "LXGW WenKai Mono" :scale 1.3)

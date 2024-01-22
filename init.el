@@ -60,8 +60,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode 0)
 (setq make-backup-files nil)
-(setq auto-save-default nil)
-(setq backup-by-copying t)
+;; (setq auto-save-default nil)
 (setq create-lockfiles nil)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
@@ -81,6 +80,11 @@
 (setq display-time-24hr-format t)
 (display-time-mode 1)
 (display-battery-mode 1)
+(if *is-a-linux*
+  (when
+    (string=  "N/A"
+      (cdr (car (battery-linux-sysfs))))
+    (display-battery-mode -1)))
 (setq lisp-indent-offset 2)
 (setq-default indent-tabs-mode nil)
 
@@ -110,11 +114,22 @@
       :ensure t
       :config
       (load-theme 'modus-operandi-tritanopia t))))
-(electric-pair-mode 1)
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
+(add-hook 'conf-mode-hook 'electric-pair-local-mode)
 (use-package company
   :ensure t
+  :hook
+  (prog-mode . company-mode)
+  (org-mode . company-mode)
+  (text-mode . company-mode)
   :config
-  (global-company-mode 1))
+  (define-key company-active-map (kbd "TAB") nil)
+  (define-key company-active-map [tab] nil)
+  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+  (define-key company-active-map [tab] 'company-complete-selection)
+  (define-key company-active-map (kbd "M-n") 'company-complete-selection)
+  (define-key company-active-map [return] nil)
+  (define-key company-active-map (kbd "RET") nil))
 (use-package fussy
   :ensure t
   :config
@@ -212,11 +227,12 @@
   :ensure nil
   :bind
   ("C-c o" . recentf-open)
-  :config
+  :init
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/tmp/" "/ssh:"))
   (recentf-mode 1))
 (global-set-key (kbd "<f9>") 'toggle-one-window)
+(global-set-key (kbd "<f8>") 'scratch-buffer)
 (global-set-key (kbd "C-c n") 'revert-buffer)
 
 ;; windows
@@ -245,7 +261,9 @@
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
-  (load-theme 'ef-bio t))
+  ;; (load-theme 'ef-elea-dark t)
+  (load-theme 'modus-operandi-deuteranopia t)
+  (require-init 'init-telega))
 
 (require-init 'init-sis)
 (require-init 'init-org)
@@ -264,7 +282,97 @@
 (require-init 'init-dict)
 (require-init 'init-copilot)
 (require-init 'init-tab)
+(require-init 'init-tags)
+
+(use-package keyfreq
+  :ensure t
+  :config
+  (setq keyfreq-excluded-commands '(self-insert-command
+                                     pixel-scroll-precision
+                                     meow-keypad
+                                     org-self-insert-command
+                                     meow-left
+                                     backward-delete-char-untabify
+                                     meow-next
+                                     meow-prev
+                                     mouse-set-point
+                                     meow-insert-exit
+                                     meow-right
+                                     meow-keypad-self-insert
+                                     mouse-drag-region
+                                     org-delete-backward-char
+                                     meow-insert
+                                     delete-backward-char))
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
+
+(setq-default
+
+  warning-suppress-log-types '((comp))
+
+  ;; Backup setups
+  ;; We use temporary directory /tmp for backup files
+  ;; More versions should be saved
+  backup-directory-alist `((".*" . ,temporary-file-directory))
+  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+  backup-by-copying t
+  delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t
+
+  ;; Don't wait for keystrokes display
+  echo-keystrokes 0.01
+
+  ;; Disable margin for overline and underline
+  overline-margin 0
+  underline-minimum-offset 0
+
+  ;; Better scroll behavior
+  mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))
+  mouse-wheel-progressive-speed nil
+
+  ;; Disable copy region blink
+  copy-region-blink-delay 0
+
+  ;; Use short answer when asking yes or no
+  read-answer-short t
+
+  ;; Mouse yank at current point
+  mouse-yank-at-point t
+
+  ;; DWIM target for dired
+  ;; Automatically use another dired buffer as target for copy/rename
+  dired-dwim-target t
+
+  ;; Don't echo multiline eldoc
+  eldoc-echo-area-use-multiline-p nil)
+
+(global-subword-mode 1)
+
+(global-set-key (kbd "C-'") 'set-mark-command)
+
+(if *is-a-linux*
+  (run-with-idle-timer 0.1 nil
+    (lambda ()
+      (require-init 'init-pyim)
+      (require-init 'init-typepad))))
+
+(add-to-list 'auto-mode-alist '("\\Eask\\'" . lisp-mode))
+
+(with-eval-after-load 'org-agenda
+  (add-hook 'org-agenda-mode-hook 'hl-line-mode))
+
+;; startup done
 (message "*** Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
                    (float-time (time-subtract after-init-time before-init-time)))
-           gcs-done)
+  gcs-done)
+
+(add-hook 'window-setup-hook
+  (lambda ()
+    (when (not window-system)
+      (load-theme 'modus-vivendi t)
+      (set-background-color "nil"))))
+(put 'erase-buffer 'disabled nil)
+(put 'list-timers 'disabled nil)

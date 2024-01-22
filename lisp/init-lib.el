@@ -235,7 +235,8 @@ list is returned as-is."
          (buffer (window-buffer window))
          (pos (posn-point (event-start event))))
     (message "鼠标点击位置：窗口 %s，缓冲区 %s，位置 %s" window buffer pos)))
-;; (local-set-key (kbd "<mouse-1>") 'my-mouse-click-handler)
+;; (global-set-key (kbd "<mouse-1>") 'my-mouse-click-handler)
+
 ;; toggle-one-window (from lazycat)
 (defvar toggle-one-window-window-configuration nil
   "The window configuration use for `toggle-one-window'.")
@@ -244,12 +245,13 @@ list is returned as-is."
   "Toggle between window layout and one window."
   (interactive)
   (if (equal (length (cl-remove-if #'window-dedicated-p (window-list))) 1)
-      (if toggle-one-window-window-configuration
-          (progn
-            (set-window-configuration toggle-one-window-window-configuration)
-            (setq toggle-one-window-window-configuration nil))
-        (message "No other windows exist."))
-    (setq toggle-one-window-window-configuration (current-window-configuration))
+    (if toggle-one-window-window-configuration
+      (progn
+        (set-window-configuration toggle-one-window-window-configuration)
+        (setq toggle-one-window-window-configuration nil))
+      (message "No other windows exist."))
+    (progn
+      (setq toggle-one-window-window-configuration (current-window-configuration)))
     (delete-other-windows)))
 
 (defun tab-to-space ()
@@ -278,5 +280,18 @@ list is returned as-is."
                          filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
   (insert (concat "[[file:" filename "]]"))
   (org-display-inline-images))
+
+(defun echo-current-theme ()
+  (interactive)
+  (message "Current theme: %s" (car custom-enabled-themes)))
+
+(defun buffer-mode (buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (with-current-buffer buffer-or-string
+    major-mode))
+
+(defun print-swb ()
+  (interactive)
+  (message "%d" (string-width (buffer-string))))
 
 (provide 'init-lib)
