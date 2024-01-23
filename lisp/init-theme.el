@@ -1,4 +1,4 @@
-(setq-default custom-enabled-themes '(ef-day ef-autumn ef-night ef-spring))
+(setq-default custom-enabled-themes '(modus-vivendi ef-spring))
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
   (dolist (theme custom-enabled-themes)
