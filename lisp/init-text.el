@@ -1,7 +1,10 @@
 (add-hook 'text-mode-hook #'my/setup-txt-imenu)
 (use-package olivetti
   :ensure t
-  :hook (text-mode . olivetti-mode))
+  :hook (text-mode . olivetti-mode)
+  (prog-mode . olivetti-mode)
+  :config
+  (setq olivetti-body-width 100))
 ;; ava in emacs>29
 ;; (use-package auto-scroll
 ;;   :init (slot/vc-install :fetcher "github" :repo "RJTK/emacs-auto-scroll"))
