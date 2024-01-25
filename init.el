@@ -16,6 +16,10 @@
   (setq emacs-gc-stats-remind t)
   (emacs-gc-stats-mode +1))
 
+(unless (bound-and-true-p my-computer-has-smaller-memory-p)
+  (setq gc-cons-percentage 0.6)
+  (setq gc-cons-threshold most-positive-fixnum))
+
 (defun my-initialize-package ()
   "Package loading optimization.  No need to activate all the packages so early."
   ;; @see https://www.gnu.org/software/emacs/news/NEWS.27.1
@@ -374,11 +378,22 @@
 (with-eval-after-load 'org-agenda
   (add-hook 'org-agenda-mode-hook 'hl-line-mode))
 
+(defun my-cleanup-gc ()
+  "Clean up gc."
+  (setq gc-cons-threshold  67108864) ; 64M
+  (setq gc-cons-percentage 0.1) ; original value
+  (garbage-collect))
+
+(run-with-idle-timer 4 nil #'my-cleanup-gc)
+
 ;; startup done
-(message "*** Emacs loaded in %s with %d garbage collections."
-           (format "%.2f seconds"
-                   (float-time (time-subtract after-init-time before-init-time)))
-  gcs-done)
+(run-with-timer 0.2 nil
+  (lambda ()
+    (message "*** Emacs loaded in %s with %d garbage collections."
+      (format "%.2f seconds"
+        (float-time (time-subtract after-init-time before-init-time)))
+      gcs-done)))
+
 
 (add-hook 'window-setup-hook
   (lambda ()
