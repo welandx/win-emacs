@@ -1,6 +1,12 @@
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-                         ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(setq default-frame-alist '((ns-transparent-titlebar . t)
+                            (alpha-background . 80)
+                            (width . 100)
+                            (height . 40)))
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'init-elpaca)
 (defconst *is-a-win* (eq system-type 'windows-nt))
 (defconst *is-a-mac* (eq system-type 'darwin))
 (defconst *is-a-linux* (eq system-type 'gnu/linux))
@@ -48,7 +54,7 @@
     (setq package-enable-at-startup nil)
     (package-initialize)))
 
-(my-initialize-package)
+;; (my-initialize-package)
 
 (let* ((minver "29"))
   (when (version< emacs-version minver)
@@ -56,8 +62,6 @@
       (package-install "use-package"))))
 ;; 一些默认设置
 (setq default-directory "~/")
-(menu-bar-mode 0)
-(tool-bar-mode -1)
 (scroll-bar-mode 0)
 (setq make-backup-files nil)
 ;; (setq auto-save-default nil)
@@ -102,6 +106,7 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 (use-package vertico-directory
+  :elpaca nil
   :after vertico
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
@@ -153,11 +158,13 @@
   :bind
   ("C-," . embark-act))
 (use-package saveplace
+  :elpaca nil
   :ensure nil
   :hook
   (text-mode . save-place-mode))
 (use-package isearch
   :ensure nil
+  :elpaca nil
   :bind (:map isearch-mode-map
               ([remap isearch-delete-char] . isearch-del-char))
   :custom
@@ -187,6 +194,7 @@
   ("C-c b" . consult-buffer))
 (use-package autorevert
   :ensure nil
+  :elpaca nil
   :hook (after-init . global-auto-revert-mode))
 (use-package ripgrep
   :ensure t
@@ -225,6 +233,7 @@
   (yas-global-mode 1))
 (use-package recentf
   :ensure nil
+  :elpaca nil
   :bind
   ("C-c o" . recentf-open)
   :init
@@ -255,9 +264,11 @@
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   (setq-default org-directory "~/notes")
   (require-init 'init-telega)
-  (require-init 'init-theme)
+  (load-theme 'modus-vivendi t)
+  ;;(require-init 'init-theme)
   (require-init 'init-osx-keys)
-  (require-init 'init-exec-path))
+  ;;(require-init 'init-exec-path))
+  )
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")

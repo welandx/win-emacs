@@ -1,4 +1,5 @@
 (use-package copilot
+  :elpaca nil
   :vc (:fetcher "github" :repo "zerolfx/copilot.el")
   :defer 1
   ;; :hook
