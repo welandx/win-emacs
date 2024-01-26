@@ -1,10 +1,6 @@
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                           ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-(setq default-frame-alist '((ns-transparent-titlebar . t)
-                            (alpha-background . 80)
-                            (width . 100)
-                            (height . 40)))
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'init-elpaca)
 (defconst *is-a-win* (eq system-type 'windows-nt))
@@ -176,9 +172,11 @@
   (lazy-count-prefix-format "%s/%s ")
   (lazy-highlight-cleanup nil))
 (use-package imenu
+  :elpaca nil
   :bind
   ("C-'" . imenu))
 (use-package ace-pinyin
+  :disabled
   :ensure t
   :config
   (ace-pinyin-global-mode +1))
@@ -238,6 +236,7 @@
 (use-package recentf
   :ensure nil
   :elpaca nil
+  :defer 0.1
   :bind
   ("C-c o" . recentf-open)
   :init

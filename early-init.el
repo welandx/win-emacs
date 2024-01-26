@@ -17,6 +17,6 @@
 (setq default-frame-alist '((menu-bar-lines . 0)
                              (tool-bar-lines . 0)
                              (ns-transparent-titlebar . t)
-                            (alpha-background . 80)
+                            (alpha-background . 50)
                             (width . 100)
                             (height . 40)))

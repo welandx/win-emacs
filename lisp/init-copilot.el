@@ -10,7 +10,8 @@
 
 
 (use-package gptel
-  :vc (:fetcher "github" :repo "karthink/gptel")
+  :elpaca (gptel :host github :repo "karthink/gptel") ;;downloaded from github
+  ;; :vc (:fetcher "github" :repo "karthink/gptel")
   :defer 1
   :config
   (setq-default gptel-default-mode 'org-mode)
