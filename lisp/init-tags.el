@@ -7,7 +7,7 @@
   ;; Bind your frequently used commands.  Alternatively, you can define them
   ;; in `citre-mode-map' so you can only use them when `citre-mode' is enabled.
   :bind
-  (:prefix-map prog-mode-map
+  (:prefix-map citre-mode-map
     :prefix "C-c f"
     ("p" . citre-peek)
     ("u" . citre-update-this-tags-file)
@@ -33,7 +33,7 @@
    ;; By default, when you open any file, and a tags file can be found for it,
    ;; `citre-mode' is automatically enabled.  If you only want this to work for
    ;; certain modes (like `prog-mode'), set it like this.
-    citre-auto-enable-citre-mode-modes '(prog-mode))
+    citre-auto-enable-citre-mode-modes '(emacs-lisp-mode))
   (setq-default citre-enable-capf-integration nil
     citre-enable-xref-integration nil)
   )
