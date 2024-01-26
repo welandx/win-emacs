@@ -1,12 +1,14 @@
 ;; Mac 配置
 (when *is-a-mac*
   (use-package org
+    :elpaca nil
     :load-path "~/kem/site-lisp/org-lisp"
     :init
     (setq-default org-agenda-files '("~/org/daily"))
     :bind
     ("C-c a" . org-agenda))
   (use-package mpvi
+    :elpaca nil
     :ensure t
     :config
     (setq mpvi-danmaku2ass "~/Documents/GitHub/danmaku2ass/danmaku2ass.py")
@@ -159,6 +161,7 @@
   (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
 (use-package tex
+  :disabled
   :defer 0.5 ; rime need texmathp, so enable it before use rime in org file
   :ensure auctex
   :config
@@ -258,6 +261,7 @@
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 (use-package org
+  :elpaca nil
   :bind
   ("C-c a" . org-agenda)
   :config

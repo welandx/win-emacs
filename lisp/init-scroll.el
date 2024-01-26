@@ -1,6 +1,8 @@
 (if *is-a-mac*
  (use-package ultra-scroll-mac
   :if (eq window-system 'mac)
+  :disabled
+  :elpaca nil
   :vc (:fetcher "github" :repo "jdtsmith/ultra-scroll-mac")
   :init
   (setq scroll-conservatively 101)

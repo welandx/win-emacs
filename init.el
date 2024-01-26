@@ -1,6 +1,8 @@
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-                         ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'init-elpaca)
 (defconst *is-a-win* (eq system-type 'windows-nt))
 (defconst *is-a-mac* (eq system-type 'darwin))
 (defconst *is-a-linux* (eq system-type 'gnu/linux))
@@ -9,6 +11,10 @@
   (require 'emacs-gc-stats)
   (setq emacs-gc-stats-remind t)
   (emacs-gc-stats-mode +1))
+
+(unless (bound-and-true-p my-computer-has-smaller-memory-p)
+  (setq gc-cons-percentage 0.6)
+  (setq gc-cons-threshold most-positive-fixnum))
 
 (defun my-initialize-package ()
   "Package loading optimization.  No need to activate all the packages so early."
@@ -48,7 +54,7 @@
     (setq package-enable-at-startup nil)
     (package-initialize)))
 
-(my-initialize-package)
+;; (my-initialize-package)
 
 (let* ((minver "29"))
   (when (version< emacs-version minver)
@@ -56,8 +62,6 @@
       (package-install "use-package"))))
 ;; 一些默认设置
 (setq default-directory "~/")
-(menu-bar-mode 0)
-(tool-bar-mode -1)
 (scroll-bar-mode 0)
 (setq make-backup-files nil)
 ;; (setq auto-save-default nil)
@@ -102,6 +106,7 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 (use-package vertico-directory
+  :elpaca nil
   :after vertico
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
@@ -153,11 +158,13 @@
   :bind
   ("C-," . embark-act))
 (use-package saveplace
+  :elpaca nil
   :ensure nil
   :hook
   (text-mode . save-place-mode))
 (use-package isearch
   :ensure nil
+  :elpaca nil
   :bind (:map isearch-mode-map
               ([remap isearch-delete-char] . isearch-del-char))
   :custom
@@ -165,9 +172,11 @@
   (lazy-count-prefix-format "%s/%s ")
   (lazy-highlight-cleanup nil))
 (use-package imenu
+  :elpaca nil
   :bind
   ("C-'" . imenu))
 (use-package ace-pinyin
+  :disabled
   :ensure t
   :config
   (ace-pinyin-global-mode +1))
@@ -187,6 +196,7 @@
   ("C-c b" . consult-buffer))
 (use-package autorevert
   :ensure nil
+  :elpaca nil
   :hook (after-init . global-auto-revert-mode))
 (use-package ripgrep
   :ensure t
@@ -225,6 +235,8 @@
   (yas-global-mode 1))
 (use-package recentf
   :ensure nil
+  :elpaca nil
+  :defer 0.1
   :bind
   ("C-c o" . recentf-open)
   :init
@@ -255,9 +267,11 @@
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   (setq-default org-directory "~/notes")
   (require-init 'init-telega)
-  (require-init 'init-theme)
+  (load-theme 'modus-vivendi t)
+  ;;(require-init 'init-theme)
   (require-init 'init-osx-keys)
-  (require-init 'init-exec-path))
+  ;;(require-init 'init-exec-path))
+  )
 ;; GNU/Linux
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
@@ -363,11 +377,22 @@
 (with-eval-after-load 'org-agenda
   (add-hook 'org-agenda-mode-hook 'hl-line-mode))
 
+(defun my-cleanup-gc ()
+  "Clean up gc."
+  (setq gc-cons-threshold  67108864) ; 64M
+  (setq gc-cons-percentage 0.1) ; original value
+  (garbage-collect))
+
+(run-with-idle-timer 4 nil #'my-cleanup-gc)
+
 ;; startup done
-(message "*** Emacs loaded in %s with %d garbage collections."
-           (format "%.2f seconds"
-                   (float-time (time-subtract after-init-time before-init-time)))
-  gcs-done)
+(run-with-timer 0.2 nil
+  (lambda ()
+    (message "*** Emacs loaded in %s with %d garbage collections."
+      (format "%.2f seconds"
+        (float-time (time-subtract after-init-time before-init-time)))
+      gcs-done)))
+
 
 (add-hook 'window-setup-hook
   (lambda ()

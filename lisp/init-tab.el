@@ -1,4 +1,5 @@
 (use-package sort-tab
+  :elpaca nil
   :vc (:fetcher "github" :repo "manateelazycat/sort-tab")
   :defer 0.1
   :bind
@@ -15,6 +16,7 @@
 
 (use-package tab-bar
   :ensure nil
+  :elpaca nil
   :custom
   (tab-bar-show nil)
   :bind

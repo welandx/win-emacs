@@ -1,5 +1,6 @@
 (use-package gdb-mi
   :bind
+  :elpaca nil
   (:map gud-mode-map
         ("r" . gud-run)
         ("n" . gud-next))

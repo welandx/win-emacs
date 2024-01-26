@@ -1,5 +1,6 @@
 (use-package whitespace
   :hook (prog-mode . whitespace-mode)
+  :elpaca nil
   :config
   ;; Don't use different background for tabs.
   (face-spec-set 'whitespace-tab
