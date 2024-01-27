@@ -6,25 +6,21 @@
   (require 'citre-config)
   ;; Bind your frequently used commands.  Alternatively, you can define them
   ;; in `citre-mode-map' so you can only use them when `citre-mode' is enabled.
-  :bind
-  (:prefix-map citre-mode-map
-    :prefix "C-c f"
-    ("p" . citre-peek)
-    ("u" . citre-update-this-tags-file)
-    ("j" . citre-jump))
+  ;; :bind
+  ;; (:prefix-map citre-mode-map
+  ;;   :prefix "C-c l"
+  ;;   ("p" . citre-peek)
+  ;;   ("u" . citre-update-this-tags-file)
+  ;;   ("j" . citre-jump))
 
   :config
+  (define-prefix-command 'citre-prefix)
+  (global-set-key (kbd "C-c f") 'citre-prefix)
+  (define-key citre-prefix (kbd "p") 'citre-peek)
+  (define-key citre-prefix (kbd "u") 'citre-update-this-tags-file)
+  (define-key citre-prefix (kbd "j") 'citre-jump)
   (setq
-   ;; Set these if readtags/ctags is not in your PATH.
-   ;; citre-readtags-program "/path/to/readtags"
    citre-ctags-program "/usr/bin/ctags"
-   ;; Set these if gtags/global is not in your PATH (and you want to use the
-   ;; global backend)
-   ;; citre-gtags-program "/path/to/gtags"
-   ;; citre-global-program "/path/to/global"
-   ;; Set this if you use project management plugin like projectile.  It's
-   ;; used for things like displaying paths relatively, see its docstring.
-   ;; citre-project-root-function #'projectile-project-root
    ;; Set this if you want to always use one location to create a tags file.
    citre-default-create-tags-file-location 'global-cache
    ;; See the "Create tags file" section above to know these options
@@ -37,3 +33,6 @@
   (setq-default citre-enable-capf-integration nil
     citre-enable-xref-integration nil)
   )
+
+
+(provide 'init-tags)
