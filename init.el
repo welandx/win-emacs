@@ -63,7 +63,7 @@
 ;; 一些默认设置
 (setq default-directory "~/")
 (scroll-bar-mode 0)
-(setq make-backup-files nil)
+;; (setq make-backup-files nil)
 ;; (setq auto-save-default nil)
 (setq create-lockfiles nil)
 (setq inhibit-startup-screen t)
@@ -124,27 +124,27 @@
 (use-package company
   :ensure t
   :hook
-  (prog-mode . company-mode)
+  ;; (prog-mode . company-mode)
   (org-mode . company-mode)
   (text-mode . company-mode)
   :config
   (define-key company-active-map (kbd "TAB") nil)
   (define-key company-active-map [tab] nil)
-  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-  (define-key company-active-map [tab] 'company-complete-selection)
+  ;; (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+  ;; (define-key company-active-map [tab] 'company-complete-selection)
   (define-key company-active-map (kbd "M-n") 'company-complete-selection)
   (define-key company-active-map [return] nil)
   (define-key company-active-map (kbd "RET") nil))
-(use-package fussy
-  :ensure t
-  :config
-  (push 'fussy completion-styles)
-  (setq
-   ;; For example, project-find-file uses 'project-files which uses
-   ;; substring completion by default. Set to nil to make sure it's using
-   ;; flx.
-   completion-category-defaults nil
-   completion-category-overrides nil))
+;; (use-package fussy
+;;   :ensure t
+;;   :config
+;;   (push 'fussy completion-styles)
+;;   (setq
+;;    ;; For example, project-find-file uses 'project-files which uses
+;;    ;; substring completion by default. Set to nil to make sure it's using
+;;    ;; flx.
+;;    completion-category-defaults nil
+;;    completion-category-overrides nil))
 
 (use-package meow
   :ensure t
