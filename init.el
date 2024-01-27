@@ -269,8 +269,9 @@
   (require-init 'init-telega)
   (load-theme 'modus-vivendi t)
   ;;(require-init 'init-theme)
+  (require 'init-mac-org)
   (require-init 'init-osx-keys)
-  ;;(require-init 'init-exec-path))
+  (require-init 'init-exec-path)
   )
 ;; GNU/Linux
 (when *is-a-linux*
@@ -366,7 +367,7 @@
 
 (global-set-key (kbd "C-'") 'set-mark-command)
 
-(if *is-a-linux*
+(when *is-a-linux*
   (require-init 'init-pyim)
   (require-init 'init-typepad))
 
