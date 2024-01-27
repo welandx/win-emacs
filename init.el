@@ -367,15 +367,17 @@
 (global-set-key (kbd "C-'") 'set-mark-command)
 
 (if *is-a-linux*
-  (run-with-idle-timer 0.1 nil
-    (lambda ()
-      (require-init 'init-pyim)
-      (require-init 'init-typepad))))
+  (require-init 'init-pyim)
+  (require-init 'init-typepad))
+
+(setq show-paren-delay 0.02)
 
 (add-to-list 'auto-mode-alist '("\\Eask\\'" . lisp-mode))
 
 (with-eval-after-load 'org-agenda
   (add-hook 'org-agenda-mode-hook 'hl-line-mode))
+
+(require-init 'init-corfu)
 
 (defun my-cleanup-gc ()
   "Clean up gc."

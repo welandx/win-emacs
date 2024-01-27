@@ -3,6 +3,7 @@
   :ensure t
   :config
   (setq default-input-method "pyim")
+  (setq pyim-page-posframe-min-width 15) ;; 不需要那么长的候选框
   (pyim-scheme-add
     '(hmdz
        :document
@@ -25,4 +26,5 @@
     '(pyim-probe-evil-normal-mode
        pyim-probe-auto-english
        pyim-probe-program-mode)))
+
 (provide 'init-pyim)
