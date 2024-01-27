@@ -7,7 +7,9 @@
 
 (typepad-load-long)
 
-(add-to-list 'meow-mode-state-list '(typepad-readonly-mode . motion))
+(with-eval-after-load 'meow
+ (add-to-list 'meow-mode-state-list '(typepad-readonly-mode . motion)))
+
 
 ;; ;; enable visual-fill-column-mode in typepad-mode and typepad-readonly-mode
 

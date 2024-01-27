@@ -1,6 +1,6 @@
 (use-package sort-tab
-  :elpaca nil
-  :vc (:fetcher "github" :repo "manateelazycat/sort-tab")
+  :elpaca (:host github :repo "manateelazycat/sort-tab")
+  ;; :vc (:fetcher "github" :repo "manateelazycat/sort-tab")
   :defer 0.1
   :bind
   ("M-1" . 'sort-tab-select-visible-tab)

@@ -4,8 +4,12 @@
           (shell-mode . corfu-mode)
           (eshell-mode . corfu-mode))
   :bind
-  (:map corfu-map ("SPC" . corfu-insert-separator))
+  (:map corfu-map
+    ("SPC" . corfu-insert-separator)
+    ("C-<return>" . newline))
+
   :config
+  (setq corfu-auto t)
   (setq  completion-styles '(orderless basic)))
 
 (setq completion-cycle-threshold 3)

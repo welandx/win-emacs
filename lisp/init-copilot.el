@@ -1,6 +1,6 @@
 (use-package copilot
-  :elpaca nil
-  :vc (:fetcher "github" :repo "zerolfx/copilot.el")
+  :elpaca (:host github :repo "zerolfx/copilot.el")
+  ;; :vc (:fetcher "github" :repo "zerolfx/copilot.el")
   :defer 1
   ;; :hook
   ;; (emacs-lisp-mode . copilot-mode)
