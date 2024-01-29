@@ -17,6 +17,9 @@
 (setq tab-always-indent 'complete)
 
 (use-package nerd-icons-corfu
-  :after corfu)
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
 
 (provide 'init-corfu)
