@@ -130,8 +130,8 @@
   :config
   (define-key company-active-map (kbd "TAB") nil)
   (define-key company-active-map [tab] nil)
-  ;; (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-  ;; (define-key company-active-map [tab] 'company-complete-selection)
+  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+  (define-key company-active-map [tab] 'company-complete-selection)
   (define-key company-active-map (kbd "M-n") 'company-complete-selection)
   (define-key company-active-map [return] nil)
   (define-key company-active-map (kbd "RET") nil))
@@ -277,7 +277,7 @@
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
   ;; (load-theme 'ef-elea-dark t)
-  (load-theme 'modus-operandi-deuteranopia t)
+  (load-theme 'kanagawa t)
   (require-init 'init-telega))
 
 (require-init 'init-sis)
