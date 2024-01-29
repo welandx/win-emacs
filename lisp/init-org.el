@@ -52,6 +52,7 @@
   (setq denote-journal-extras-directory (concat denote-directory "/daily")))
 
 (use-package tex
+  :if *is-a-linux*
   :defer 0.5 ; rime need texmathp, so enable it before use rime in org file
   ;; :ensure auctex
   :elpaca (auctex :pre-build (("./autogen.sh")

@@ -1,6 +1,6 @@
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overcreatewrite-define-key
+  (meow-motion-overwrite-define-key
     '("j" . meow-next)
     '("k" . meow-prev)
     '("<escape>" . ignore))
@@ -42,7 +42,7 @@
     '("o" . meow-open-below)
     '("b" . meow-back-word)
     '("B" . meow-back-symbol)
-    '("c" . meow-change)
+    '("c" . meow-keypad-start)
     '("C" . meow-change)
     '("d" . meow-delete)
     '("D" . meow-backward-delete)
