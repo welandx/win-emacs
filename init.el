@@ -228,9 +228,9 @@
     (setq nerd-icons-font-family "FantasqueSansM Nerd Font Mono")))
 (use-package yasnippet
   :ensure t
-  :bind
-  (:map org-mode-map
-        ("M-/" . yas-expand))
+  ;; :bind
+  ;; (:map org-mode-map
+  ;;       ("M-/" . yas-expand))
   :config
   (yas-global-mode 1))
 (use-package recentf
@@ -277,7 +277,9 @@
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
   ;; (load-theme 'ef-elea-dark t)
-  (load-theme 'kanagawa t)
+  (use-package kanagawa-theme
+    :config
+    (load-theme 'kanagawa t))
   (require-init 'init-telega))
 
 (require-init 'init-sis)
@@ -379,6 +381,8 @@
   (add-hook 'org-agenda-mode-hook 'hl-line-mode))
 
 (require-init 'init-corfu)
+(require-init 'init-flycheck)
+(require-init 'init-lsp)
 
 (defun my-cleanup-gc ()
   "Clean up gc."
