@@ -36,11 +36,11 @@
     (defun continue-search-back ()
       (interactive)
       (setq mycount 1)
-      (while (< mycount 100)
+      (while (< mycount 1000)
         (telega-button-backward 1 nil :no-error)
         (when (telega-msg-match-p (telega-msg-at) `(contains ,telega-pre-regex))
           (message "yes!")
-          (setq mycount 99))
+          (setq mycount 999))
         (setq mycount (1+ mycount))))
 
     (defun my/search-back ()
@@ -48,11 +48,11 @@
       (let ((regex (read-string "Type: ")))
         (setq telega-pre-regex regex)
         (setq mycount 1)
-        (while (< mycount 100)
+        (while (< mycount 1000)
           (telega-button-backward 1 nil :no-error)
           (when (telega-msg-match-p (telega-msg-at) `(contains ,regex))
             (message "yes!")
-            (setq mycount 99))
+            (setq mycount 999))
           (setq mycount (1+ mycount))))))
 (when *is-a-mac*
 (with-eval-after-load 'telega
