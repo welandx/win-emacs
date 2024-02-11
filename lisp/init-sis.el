@@ -39,7 +39,7 @@
   (setq sis-inline-tighten-head-rule nil)
   (setq sis-default-cursor-color "brown3")
   (setq sis-other-cursor-color "orange")
-  (setq sis-prefix-override-keys (list "C-c" "C-x" "C-h" "C-c e"))
+  (setq sis-prefix-override-keys (list "C-h"))
   )
 (use-package rime
   :if *is-a-linux*
