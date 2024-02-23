@@ -105,4 +105,7 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
+(setq org-link-search-must-match-exact-headline nil)
+(setq org-open-link-functions nil)
+(setq org-modern-table nil)
 (provide 'init-mac-org)
