@@ -1,6 +1,5 @@
 (use-package dired
   :defer t
-  :elpaca nil
   :hook (dired-mode . dired-hide-details-mode)
   :config
   (when *is-a-win*

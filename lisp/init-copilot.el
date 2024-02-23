@@ -1,8 +1,10 @@
 (use-package copilot
-  ;; :elpaca (:host github :repo "zerolfx/copilot.el")
-  :elpaca nil
-  :vc (:fetcher "github" :repo "zerolfx/copilot.el")
-  :defer 1
+  :straight (:host github :repo "zerolfx/copilot.el")
+  ;; :vc (:fetcher "github" :repo "zerolfx/copilot.el")
+  :defer 2
+  :init
+  (add-to-list 'load-path "~/.emacs.d/elpa/copilot")
+  (require 'copilot)
   ;; :hook
   ;; (emacs-lisp-mode . copilot-mode)
   :config
@@ -11,7 +13,7 @@
 
 
 (use-package gptel
-  :elpaca (gptel :host github :repo "karthink/gptel") ;;downloaded from github
+  :straight (gptel :host github :repo "karthink/gptel") ;;downloaded from github
   ;; :vc (:fetcher "github" :repo "karthink/gptel")
   :defer 1
   :config

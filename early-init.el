@@ -1,4 +1,4 @@
-(setq package-enable-at-startup nil)
+;;(setq package-enable-at-startup nil)
 ;; (add-to-list 'load-path "~/.emacs.d/elpa/benchmark-init-20220414.1612/")
 ;; (require 'benchmark-init)
 ;; ;; To disable collection of benchmark data after init is done.
@@ -17,6 +17,6 @@
 (setq default-frame-alist '((menu-bar-lines . 0)
                              (tool-bar-lines . 0)
                              (ns-transparent-titlebar . t)
-                            (alpha-background . 80)
-                            (width . 100)
-                            (height . 40)))
+                            (alpha-background . 90)
+                            (width . 200)
+                            (height . 60)))

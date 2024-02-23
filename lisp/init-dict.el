@@ -77,7 +77,6 @@
 
 (use-package company-english-helper
   :defer 2
-  :elpaca nil
   :vc (:fetcher "github" :repo "manateelazycat/company-english-helper"))
 
 

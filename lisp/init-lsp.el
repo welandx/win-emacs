@@ -1,5 +1,4 @@
 (use-package eglot
-  :elpaca nil
   :ensure nil
   :hook
   (python-mode . eglot-ensure)

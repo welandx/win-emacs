@@ -7,7 +7,6 @@
 (when *is-a-linux*
   (setq-default org-agenda-files '("~/notes/daily"))
   (use-package org
-    :elpaca nil
     :load-path "~/.emacs.d/site-lisp/org-mode/lisp"
     :config
     (with-eval-after-load 'org
@@ -54,16 +53,6 @@
 (use-package tex
   :if *is-a-linux*
   :defer 0.5 ; rime need texmathp, so enable it before use rime in org file
-  ;; :ensure auctex
-  :elpaca (auctex :pre-build (("./autogen.sh")
-                    ("./configure"
-                     "--without-texmf-dir"
-                     "--with-packagelispdir=./"
-                     "--with-packagedatadir=./")
-                    ("make"))
-        :build (:not elpaca--compile-info) ;; Make will take care of this step
-        :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
-        :version (lambda (_) (require 'tex-site) AUCTeX-version))
   :config
   (defun +rime-predicate-org-latex-mode-p ()
     "If cursor is inside an org-mode's LaTeX fragment, macro or its arguments."
@@ -137,12 +126,6 @@
   (setq org-modern-timestamp nil)
   :config (global-org-modern-mode 1))
 
-(use-package org-margin
-  :elpaca (org-margin :host github :repo "rougier/org-margin")
-  :if *is-a-linux*
-  :defer t
-  :vc (:fetcher "github" :repo "rougier/org-margin"))
-
 (defun my-iconify-org-buffer ()
   (progn
     (push '(":PROPERTIES:" . ?󰑹) prettify-symbols-alist)
@@ -162,7 +145,6 @@
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 (use-package org
-  :elpaca nil
   :bind
   ("C-c a" . org-agenda)
   :config

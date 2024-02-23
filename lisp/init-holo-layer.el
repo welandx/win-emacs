@@ -1,4 +1,27 @@
-(add-to-list 'load-path "~/.emacs.d/site-lisp/holo-layer")
+(add-to-list 'load-path "~/repo/holo-layer")
 (require 'holo-layer)
 (setq holo-layer-enable-cursor-animation t)
+
+(setq holo-layer-cursor-animation-duration 120)
+(setq holo-layer-cursor-animation-interval 6)
+(setq holo-layer-cursor-animation-type "smooth")
+(setq holo-layer-cursor-animation-type "bezier")
+(setq holo-layer-cursor-block-commands '())
+(message "%s" (face-background 'cursor))
+(setq holo-layer-cursor-color (face-background 'cursor))
 (holo-layer-enable)
+(setq cursor-type nil)
+(defun hide-cursor ()
+  (setq cursor-type nil))
+(add-hook 'pre-command-hook #'hide-cursor)
+(defun show-cursor ()
+  "some desc for show-cursor"
+  (run-with-timer 0.15 nil
+    (lambda ()
+      (blink-cursor-mode -1)
+      (setq cursor-type 'bar))))
+(add-hook 'post-command-hook 'show-cursor)
+(defun holo-meow-exit ()
+  (setq holo-layer-cursor-animation-type "smooth-box"))
+
+(provide 'init-holo-layer)

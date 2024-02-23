@@ -1,12 +1,10 @@
 (use-package org
-  :elpaca nil
   :load-path "~/kem/site-lisp/org-lisp"
   :init
   (setq-default org-agenda-files '("~/org/daily"))
   :bind
   ("C-c a" . org-agenda))
 (use-package mpvi
-  :elpaca nil
   :ensure t
   :config
   (setq mpvi-danmaku2ass "~/Documents/GitHub/danmaku2ass/danmaku2ass.py")

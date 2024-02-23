@@ -10,7 +10,7 @@
 
 (defcustom minemacs-fonts-plist
   '(:default
-     ((:family "SauceCodePro Nerd Font Mono" :height 160)
+     ((:family "SauceCodePro Nerd Font Mono" :height 180)
        (:family "FantasqueSansM Nerd Font Mono" :height 160)
      (:family "SauceCodePro Nerd Font" :height 160)
      (:family "MonoLisa Nasy" :height 150)
@@ -38,10 +38,12 @@
     :fixed-pitch-serif
     ((:inherit default))
     :variable-pitch
-    ("Agave Nerd Font Mono"
+     (
+       "OverpassM Nerd Font Mono"
      "Latin Modern Math"
      "Lato"
-     "Roboto"
+      "Agave Nerd Font Mono"
+      "Roboto"
      "Inter"
      "San Francisco"
      "Helvetica Neue"
@@ -180,12 +182,12 @@ scaling factor for the font in Emacs' `face-font-rescale-alist'. See the
 ;; FIXME
 (+add-hook! (window-setup server-after-make-frame) #'+setup-fonts)
 ;; (add-hook 'window-setup-hook #'(lambda () (add-hook 'server-after-make-frame-hook #'+setup-fonts)))
-(when *is-a-mac*
-  (set-fontset-font t 'mathematical "Latin Modern Math-13")
-  (set-fontset-font t 'han "LXGW WenKai Screen-17")
-  ;; (set-fontset-font t 'han (font-spec :family "LXGW WenKai Screen"
-  ;; 				      :scale 1.2));; 说
-  )
+;; (when *is-a-mac*
+;;   (set-fontset-font t 'mathematical "Latin Modern Math-13")
+;;   (set-fontset-font t 'han "LXGW WenKai Screen-17")
+;;   ;; (set-fontset-font t 'han (font-spec :family "LXGW WenKai Screen"
+;;   ;; 				      :scale 1.2));; 说
+;;   )
 ;; (set-fontset-font t 'latin "Agave Nerd Font Mono")
 
 (provide 'init-fonts)
