@@ -1,8 +1,23 @@
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                           ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'init-elpaca)
 (defconst *is-a-win* (eq system-type 'windows-nt))
 (defconst *is-a-mac* (eq system-type 'darwin))
 (defconst *is-a-linux* (eq system-type 'gnu/linux))
@@ -16,50 +31,11 @@
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum))
 
-(defun my-initialize-package ()
-  "Package loading optimization.  No need to activate all the packages so early."
-  ;; @see https://www.gnu.org/software/emacs/news/NEWS.27.1
-  ;; ** Installed packages are now activated *before* loading the init file.
-  ;; As a result of this change, it is no longer necessary to call
-  ;; `package-initialize' in your init file.
-
-  ;; Previously, a call to `package-initialize' was automatically inserted
-  ;; into the init file when Emacs was started.  This call can now safely
-  ;; be removed.  Alternatively, if you want to ensure that your init file
-  ;; is still compatible with earlier versions of Emacs, change it to:
-
-  ;; However, if your init file changes the values of `package-load-list'
-  ;; or `package-user-dir', or sets `package-enable-at-startup' to nil then
-  ;; it won't work right without some adjustment:
-  ;; - You can move that code to the early init file (see above), so those
-  ;;   settings apply before Emacs tries to activate the packages.
-  ;; - You can use the new `package-quickstart' so activation of packages
-  ;;   does not need to pay attention to `package-load-list' or
-  ;;   `package-user-dir' any more.
-  ;; "package-quickstart.el" converts path in `load-path' into
-  ;; os dependent path, make it impossible to share same emacs.d between
-  ;; Windows and Cygwin.
-  (unless (or *is-a-win*)
-    ;; you need run `M-x package-quickstart-refresh' at least once
-    ;; to generate file "package-quickstart.el'.
-    ;; It contains the `autoload' statements for all packages.
-    (setq package-quickstart t))
-
-  ;; esup need call `package-initialize'
-  ;; @see https://github.com/jschaf/esup/issues/84
-  (when (or (featurep 'esup-child)
-            (fboundp 'profile-dotemacs)
-            (daemonp)
-          noninteractive)
-    (setq package-enable-at-startup nil)
-    (package-initialize)))
-
-;; (my-initialize-package)
-
 (let* ((minver "29"))
   (when (version< emacs-version minver)
     (unless (package-installed-p 'use-package)
       (package-install "use-package"))))
+
 ;; 一些默认设置
 (setq default-directory "~/")
 (scroll-bar-mode 0)
@@ -106,7 +82,6 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 (use-package vertico-directory
-  :elpaca nil
   :after vertico
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
@@ -158,13 +133,11 @@
   :bind
   ("C-," . embark-act))
 (use-package saveplace
-  :elpaca nil
   :ensure nil
   :hook
   (text-mode . save-place-mode))
 (use-package isearch
   :ensure nil
-  :elpaca nil
   :bind (:map isearch-mode-map
               ([remap isearch-delete-char] . isearch-del-char))
   :custom
@@ -172,7 +145,6 @@
   (lazy-count-prefix-format "%s/%s ")
   (lazy-highlight-cleanup nil))
 (use-package imenu
-  :elpaca nil
   :bind
   ("C-'" . imenu))
 (use-package ace-pinyin
@@ -196,7 +168,6 @@
   ("C-c b" . consult-buffer))
 (use-package autorevert
   :ensure nil
-  :elpaca nil
   :hook (after-init . global-auto-revert-mode))
 (use-package ripgrep
   :ensure t
@@ -235,7 +206,6 @@
   (yas-global-mode 1))
 (use-package recentf
   :ensure nil
-  :elpaca nil
   :defer 0.1
   :bind
   ("C-c o" . recentf-open)
@@ -277,10 +247,15 @@
 (when *is-a-linux*
   (setq-default org-directory "~/notes")
   ;; (load-theme 'ef-elea-dark t)
+  ;; (load-theme 'modus-operandi-tinted t)
   (use-package kanagawa-theme
-    :config
-    (load-theme 'kanagawa t))
-  (require-init 'init-telega))
+    :ensure t
+    :demand
+    ;; :config
+    ;; (load-theme 'kanagawa t)
+    )
+  (load-theme 'nier t)
+    (require-init 'init-telega))
 
 (require-init 'init-sis)
 (require-init 'init-org)
@@ -297,7 +272,9 @@
 (require-init 'init-news)
 (require-init 'init-highlight)
 (require-init 'init-dict)
-(require-init 'init-copilot)
+(run-with-idle-timer 2 nil
+  (lambda ()
+    (require-init 'init-copilot)))
 (require-init 'init-tab)
 (require-init 'init-tags)
 
@@ -383,6 +360,91 @@
 (require-init 'init-corfu)
 (require-init 'init-flycheck)
 (require-init 'init-lsp)
+(require-init 'init-popper)
+
+(use-package winner
+  :ensure nil
+  :config
+  (winner-mode))
+
+(use-package psearch
+  :straight (:host github :repo "twlz0ne/psearch.el")
+  ;; :config
+  ;; (psearch-patch rotate:refresh-window
+  ;;   (psearch-replace '`(not (one-window-p))
+  ;;     '`(not (eq 2 (length (window-list)))))
+  ;;   (psearch-replace '`(window-num (count-windows))
+  ;;     '`(window-num (1- (count-windows))))))
+  )
+
+(defun append-to-list (list-var elements)
+  "Append ELEMENTS to the end of LIST-VAR.
+
+The return value is the new value of LIST-VAR."
+  (unless (consp elements)
+    (error "ELEMENTS must be a list"))
+  (let ((list (symbol-value list-var)))
+    (if list
+        (setcdr (last list) elements)
+      (set list-var elements)))
+  (symbol-value list-var))
+(use-package rainbow-mode
+  :ensure t
+  ;; :init
+  ;; (add-to-list 'auto-mode-alist '("\\theme.el\\'" . rainbow-mode))
+  :config
+  (append-to-list 'rainbow-r-colors-alist
+    '(("ng1" . "#404040")
+       ("ng2" . "#787466")
+       ("ng3" . "#686458")
+       ("ng4" . "#5e6666")
+       ("ng5" . "#50403c")
+       ("ng6" . "#4e4c43")
+       ("ns1" . "#dad4bb")
+       ("ns2" . "#cac4ad")
+       ("ns3" . "#b9b49f")
+       ("ns4" . "#a9a491")
+       ("ns5" . "#999482")
+       ("ns6" . "#898474")
+       ("na1" . "#cd664d")
+       ("na2" . "#b4af9a")
+       ("na3" . "#3ba99f")
+       ("na4" . "#727b59")
+       ("na5" . "#b26f5f")
+       ("yorha-0" . "#f9f5d7")
+       ("yorha-1" . "#9d0006")
+       ("yorha-2" . "#79740e")
+       ("yorha-3" . "#b57614")
+       ("yorha-4" . "#076678")
+       ("yorha-5" . "#8f3f71")
+       ("yorha-6" . "#427b58")
+       ("yorha-7" . "#504945")
+       ("yorha-8" . "#bdae93")
+       ("yorha-9" . "#282828")
+       ("yorha-bg" . "#c2bda6")
+       ("yorha-fg" . "#48463d")
+       ("yorha-cursor" . "#f4f0e1")
+       ))
+  (setq rainbow-r-colors t))
+;; (add-to-list 'load-path "~/.emacs.d/site-lisp/nier")
+;; (require 'nier-theme)
+
+(use-package nov
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  :config
+  (add-hook 'nov-mode-hook (lambda () (setq truncate-lines t))))
+
+(setq vc-follow-symlinks t)
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/auto-scroll")
+(require 'auto-scroll)
+
+
+;; =============
+;; Init End Here
+;; =============
 
 (defun my-cleanup-gc ()
   "Clean up gc."

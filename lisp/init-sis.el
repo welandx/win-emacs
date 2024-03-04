@@ -4,6 +4,7 @@
     (add-to-list 'sis-context-hooks 'meow-insert-enter-hook))
 
 (use-package sis
+  :disabled
   :ensure t
   :init
   ;; `C-s/r' 默认优先使用英文 必须在 sis-global-respect-mode 前配置

@@ -16,10 +16,10 @@
 
 ;; (package-vc-install '(typepad :url "https://github.com/welandx/TypePad.el"))
 (use-package typepad
-  :elpaca (:host github :repo "welandx/TypePad.el")
-  :hook
-  (typepad-mode . perfect-margin-mode)
-  (typepad-readonly-mode . perfect-margin-mode)
+  :straight (:host github :repo "welandx/TypePad.el")
+  ;; :hook
+  ;; (typepad-mode . perfect-margin-mode)
+  ;; (typepad-readonly-mode . perfect-margin-mode)
   :config
   (setq typepad-text-path (concat user-emacs-directory "misc/typepad"))
   (add-to-list 'meow-mode-state-list '(typepad-readonly-mode . motion))
