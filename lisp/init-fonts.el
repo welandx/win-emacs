@@ -73,7 +73,7 @@
      :cjk-misc
      ((:family "Tsangerjinkai05" :scale 1.0)
        (:family "LXGW WenKai Screen" :scale 0.9)
-       (:family "霞鹜文楷 屏幕阅读版" :scale 0.9)
+       (:family "霞鹜文楷 屏幕阅读版" :scale 1.0)
        (:family "LXGW WenKai GB Screen R" :scale 0.9)
        (:family "TsangerYangMingTi" :scale 1.0))
     :han
