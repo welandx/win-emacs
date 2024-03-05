@@ -84,19 +84,10 @@
   :ensure t
 
   :init
-  (setq ispell-program-name "hunspell")
-  ;; reset the hunspell so it STOPS querying locale!
-  ;; "en_US" is the key to lookup in `ispell-local-dictionary-alist`
-  (setq ispell-local-dictionary "en_US")
-  ;; two dictionaries "en_US" and "zh_CN" are used. Feel free to remove "zh_CN"
-  ;; If `ispell-local-dictionary-alist' is nil, `ispell-local-dictionary' is passed
-  ;; to hunspell cli program as dictionary.
-  (setq ispell-local-dictionary-alist
-    '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
-  ;; new variable `ispell-hunspell-dictionary-alist' is defined in Emacs
-  ;; If it's nil, Emacs tries to automatically set up the dictionaries.
-  (when (boundp 'ispell-hunspell-dictionary-alist)
-    (setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist))
+  (setq ispell-program-name "aspell")
+  ;; You could add extra option "--camel-case" for camel case code spell checking if Aspell 0.60.8+ is installed
+  ;; @see https://github.com/redguardtoo/emacs.d/issues/796
+  (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--camel-case" "--run-together" "--run-together-limit=16"))
 
   :hook
   (prog-mode . wucuo-start)

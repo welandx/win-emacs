@@ -1,5 +1,7 @@
 (use-package sort-tab
-  :vc (:fetcher "github" :repo "manateelazycat/sort-tab")
+  :disabled
+  :straight (:host github :repo "manateelazycat/sort-tab")
+  ;; :vc (:fetcher "github" :repo "manateelazycat/sort-tab")
   :defer 0.1
   :bind
   ("M-1" . 'sort-tab-select-visible-tab)
@@ -16,7 +18,7 @@
 (use-package tab-bar
   :ensure nil
   :custom
-  (tab-bar-show nil)
+  (tab-bar-show t)
   :bind
   ("C-<tab>" . tab-next))
 
