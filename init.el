@@ -240,7 +240,7 @@
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   (setq-default org-directory "~/notes")
   (require-init 'init-telega)
-  (load-theme 'modus-vivendi t)
+  (load-theme 'zenburn t)
   ;;(require-init 'init-theme)
   (require 'init-mac-org)
   (require-init 'init-osx-keys)
