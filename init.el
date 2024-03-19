@@ -430,6 +430,7 @@ The return value is the new value of LIST-VAR."
        ))
   (setq rainbow-r-colors t))
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/nier")
+;; (use-package nier-theme)
 ;; (require 'nier-theme)
 
 (use-package nov
