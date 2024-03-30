@@ -11,6 +11,15 @@
 (use-package markdown-mode
   :ensure t)
 
+(use-package lua-mode
+  :ensure t)
+
+(use-package vimrc-mode
+  :ensure t)
+
+(use-package yaml-mode
+  :ensure t)
+
 ;; 在 org-src-block 使用 ts-mode 高亮
 (with-eval-after-load 'org
   (defun my/remap-mode (mode)

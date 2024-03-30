@@ -20,6 +20,8 @@
         (quote (("default"
                  ("code" (or (mode . emacs-lisp-mode)
                              (mode . cperl-mode)
+                             (mode . rust-mode)
+                             (mode . rust-ts-mode)
                              (mode . c-mode)
                              (mode . java-mode)
                              (mode . idl-mode)

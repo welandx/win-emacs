@@ -122,12 +122,14 @@
 ;;    completion-category-overrides nil))
 
 (use-package meow
+  :disabled
   :ensure t
   :init
   (require 'init-meow)
   :config
   (meow-setup)
   (meow-global-mode 1))
+(require-init 'init-evil)
 (use-package embark
   :ensure t
   :bind
@@ -154,8 +156,9 @@
   (ace-pinyin-global-mode +1))
 (use-package avy
   :bind
-  (:map meow-normal-state-keymap
-        ("F" . avy-goto-char)))
+  ;; (:map meow-normal-state-keymap ;;
+  ;;       ("F" . avy-goto-char))   ;;
+  )
 (use-package ace-window
   :ensure t
   :init
@@ -237,7 +240,7 @@
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   (setq-default org-directory "~/notes")
   (require-init 'init-telega)
-  (load-theme 'modus-vivendi t)
+  (load-theme 'zenburn t)
   ;;(require-init 'init-theme)
   (require 'init-mac-org)
   (require-init 'init-osx-keys)
@@ -427,6 +430,7 @@ The return value is the new value of LIST-VAR."
        ))
   (setq rainbow-r-colors t))
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/nier")
+;; (use-package nier-theme)
 ;; (require 'nier-theme)
 
 (use-package nov
