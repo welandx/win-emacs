@@ -37,36 +37,75 @@
       (package-install "use-package"))))
 
 ;; 一些默认设置
-(setq default-directory "~/")
-(scroll-bar-mode 0)
-;; (setq make-backup-files nil)
-;; (setq auto-save-default nil)
-(setq create-lockfiles nil)
-(setq inhibit-startup-screen t)
-(setq ring-bell-function 'ignore)
-(setq-default frame-title-format "Weland Emacs")
+(setq-default
+  default-directory "~/"
+  scroll-bar-mode 0
+  create-lockfiles nil
+  inhibit-startup-screen t
+  ring-bell-function 'ignore
+  frame-title-format "Weland Emacs"
+  word-wrap-by-category t
+  byte-compile-warnings nil
+  confirm-kill-processes nil
+  warning-suppress-log-types '((comp))
+  display-time-24hr-format t
+
+  ;; Backup setups
+  ;; We use temporary directory /tmp for backup files
+  ;; More versions should be saved
+  backup-directory-alist `((".*" . ,temporary-file-directory))
+  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+  backup-by-copying t
+  delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t
+
+  ;; Don't wait for keystrokes display
+  echo-keystrokes 0.01
+
+  ;; Disable margin for overline and underline
+  overline-margin 0
+  underline-minimum-offset 0
+
+  ;; Better scroll behavior
+  mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))
+  mouse-wheel-progressive-speed nil
+
+  ;; Disable copy region blink
+  copy-region-blink-delay 0
+
+  ;; Use short answer when asking yes or no
+  read-answer-short t
+
+  ;; Mouse yank at current point
+  mouse-yank-at-point t
+
+  ;; DWIM target for dired
+  ;; Automatically use another dired buffer as target for copy/rename
+  dired-dwim-target t
+
+  ;; Don't echo multiline eldoc
+  eldoc-echo-area-use-multiline-p nil
+
+  lisp-indent-offset 2
+  indent-tabs-mode nil
+  shr-max-image-proportion 0.7
+  custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 (set-window-scroll-bars (minibuffer-window) nil nil)
-(setq-default cursor-in-non-selected-windows nil)
-(setq word-wrap-by-category t)
 (toggle-word-wrap)
-(setq byte-compile-warnings nil)
-(setq shr-max-image-proportion 0.7) ;;限制 image 大小
-(setq confirm-kill-processes nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(setq-default default-directory "~/")
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
-(setq display-time-24hr-format t)
 (display-time-mode 1)
 (display-battery-mode 1)
+
 (if *is-a-linux*
   (when
     (string=  "N/A"
       (cdr (car (battery-linux-sysfs))))
     (display-battery-mode -1)))
-(setq lisp-indent-offset 2)
-(setq-default indent-tabs-mode nil)
 
 ;; 加载 lib
 (require 'init-lib)
@@ -303,47 +342,7 @@
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
 
-(setq-default
 
-  warning-suppress-log-types '((comp))
-
-  ;; Backup setups
-  ;; We use temporary directory /tmp for backup files
-  ;; More versions should be saved
-  backup-directory-alist `((".*" . ,temporary-file-directory))
-  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
-  backup-by-copying t
-  delete-old-versions t
-  kept-new-versions 6
-  kept-old-versions 2
-  version-control t
-
-  ;; Don't wait for keystrokes display
-  echo-keystrokes 0.01
-
-  ;; Disable margin for overline and underline
-  overline-margin 0
-  underline-minimum-offset 0
-
-  ;; Better scroll behavior
-  mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))
-  mouse-wheel-progressive-speed nil
-
-  ;; Disable copy region blink
-  copy-region-blink-delay 0
-
-  ;; Use short answer when asking yes or no
-  read-answer-short t
-
-  ;; Mouse yank at current point
-  mouse-yank-at-point t
-
-  ;; DWIM target for dired
-  ;; Automatically use another dired buffer as target for copy/rename
-  dired-dwim-target t
-
-  ;; Don't echo multiline eldoc
-  eldoc-echo-area-use-multiline-p nil)
 
 (global-subword-mode 1)
 
