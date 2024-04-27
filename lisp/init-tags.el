@@ -32,6 +32,13 @@
     citre-auto-enable-citre-mode-modes '(emacs-lisp-mode))
   (setq-default citre-enable-capf-integration nil
     citre-enable-xref-integration nil)
+  (defvar citre-elisp-backend
+    (citre-xref-backend-to-citre-backend
+      'elisp
+      (lambda () (derived-mode-p 'emacs-lisp-p))))
+  (citre-register-backend 'elisp citre-elisp-backend)
+  (setq citre-find-reference-backends '(elisp eglot global))
+  (setq citre-find-definition-backends '(elisp eglot tags global))
   )
 
 
