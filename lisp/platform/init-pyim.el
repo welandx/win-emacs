@@ -1,6 +1,5 @@
 (use-package pyim
   :if *is-a-linux*
-  :ensure t
   :config
   (setq default-input-method "pyim")
   (setq pyim-page-posframe-min-width 15) ;; 不需要那么长的候选框
@@ -17,9 +16,10 @@
        :code-maximum-length 4))
   (pyim-default-scheme 'hmdz)
   (defun pyim-probe-evil-normal-mode ()
-    "判断是否是evil的normal模式，如果是则返回true.
-这个函数用于：`pyim-english-input-switch-functions'."
-    (meow-normal-mode-p))
+    "Use English input while Evil is in normal state."
+    (and (bound-and-true-p evil-local-mode)
+         (fboundp 'evil-normal-state-p)
+         (evil-normal-state-p)))
   ;; (setq-default pyim-punctuation-translate-p '(auto yes no))
   (add-hook 'typepad-mode-hook 'pyim-punctuation-toggle)
   (setq-default pyim-english-input-switch-functions

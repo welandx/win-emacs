@@ -1,5 +1,5 @@
 (use-package eglot
-  :ensure nil
+  :straight nil
   :hook
   (python-mode . eglot-ensure)
   (c++-mode . eglot-ensure)

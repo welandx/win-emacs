@@ -1,19 +1,76 @@
 * Emacs
-win/linux/macos
-** Dependence
 
-*** 影响启动或卡死使用的依赖
-- Linux & Macos org-mode 需要 org-mode version>=9.7
-- Macos 需要有 macsim, 否则应该禁用 init-sis 以避免 emacs 卡死
-- Mac blur 效果依赖 mac-port, 非 mac-port 可能启动不正常
-- Windows gui 效果需要 pop-select.dll
-*** 最好解决或清理的依赖
-- ripgrep
-- Linux 输入法依赖 rime
-- font 配置硬编码了几种 Nerd Fonts, 下载它们或修改为已有字体获得正常的 org-mode 显示
-- ultra-scroll-mac 依赖 mac-port, 但不会引入错误
-*** 可以忽略的依赖
-- Linux emacs 应用了一个未合并的 patch [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2023-12/msg01338.html][link]], 但相关配置不会有影响
-- telega 依赖 tdlib, Mac 中 require 了这个包
-- init-theme 使用了一个需要自行编译的外部程序 lmutracker, Macos 上应注意这点
-  该处路径也是硬编码
+** Layout
+
+- `early-init.el`
+  启动期设置，只处理 `package-enable-at-startup`、GC 和 frame 默认参数。
+- `init.el`
+  主入口，只负责装配，不再堆积具体功能配置。
+- `lisp/core/`
+  主链骨架模块。
+- `lisp/platform/`
+  平台相关模块。
+- `lisp/feature/`
+  当前启用的功能模块。
+- `lisp/archive/legacy/`
+  被新方案替代的旧模块。
+- `lisp/archive/disabled/`
+  当前停用但保留恢复可能性的模块。
+- `lisp/archive/experiments/`
+  实验和测试文件。
+- `archive/notes/INDEX.org`
+  归档索引，记录归档原因和恢复条件。
+
+** Mainline
+
+当前默认主链：
+
+- 包管理：`straight.el`
+- 编辑栈：`evil + corfu + eglot`
+- 平台层：按系统分别加载 `platform` 模块
+- 私有扩展：允许 `init-private.el` 存在；缺失时只提示，不报错
+
+当前不进入默认启动的重功能：
+
+- `Org`
+- `telega`
+- `citre/tags`
+- `elfeed/news`
+
+这些模块都已移动到 `lisp/archive/disabled/`。
+
+** Dependencies
+
+*** 主链依赖
+
+- `git`
+  `straight.el` 自举和拉包所需。
+- `ripgrep`
+  搜索命令依赖。
+- `aspell`
+  `wucuo` 依赖。
+- 可用字体
+  字体配置仍然偏个人环境，缺字形时需要调整 [`lisp/core/init-fonts.el`](/Users/weland/.emacs.d/lisp/core/init-fonts.el)。
+
+*** 平台依赖
+
+- Linux
+  `pyim` 和 `typepad` 在主链启用。
+- macOS
+  `exec-path-from-shell` 在主链启用。
+- Windows
+  仍保留单独平台模块，但部分旧 GUI 依赖已不再保证持续维护。
+
+*** 已归档依赖
+
+- `Org` 工作流依赖 `org >= 9.7` 与相关 LaTeX 组件
+- `telega` 依赖 `tdlib`
+- 旧主题和输入法实验可能依赖外部程序
+
+这些依赖不再影响默认启动。恢复前先查看 `archive/notes/INDEX.org`。
+
+** Maintenance
+
+- 新增稳定模块时，优先放入 `lisp/core/`、`lisp/platform/` 或 `lisp/feature/`
+- 从主链摘出的模块优先迁入 `lisp/archive/`，不要直接删除
+- 恢复归档模块前，先更新 `archive/notes/INDEX.org`，再接回 `init.el`

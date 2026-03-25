@@ -1,4 +1,5 @@
 (use-package dired
+  :straight nil
   :defer t
   :hook (dired-mode . dired-hide-details-mode)
   :config

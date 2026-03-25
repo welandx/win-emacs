@@ -1,4 +1,5 @@
 (use-package whitespace
+  :straight nil
   :hook (prog-mode . whitespace-mode)
   :config
   ;; Don't use different background for tabs.

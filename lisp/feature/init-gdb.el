@@ -1,4 +1,5 @@
 (use-package gdb-mi
+  :straight nil
   :bind
   (:map gud-mode-map
         ("r" . gud-run)

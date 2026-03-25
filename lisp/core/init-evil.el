@@ -1,5 +1,4 @@
 (use-package evil
-  :ensure t
   :init (progn
           (setq evil-want-integration nil)
           )
@@ -9,18 +8,16 @@
 
 (use-package evil-collection
   :disabled
-  :ensure t)
+  )
 
 (use-package god-mode
-  :ensure t)
+  )
 
 (use-package which-key
-  :ensure t
   :config
   (which-key-mode))
 
 (use-package evil-god-state
-  :ensure t
   :after (god-mode evil)
   :config (progn
             ;; 按空格进入evil-god-state
@@ -32,3 +29,5 @@
 (global-set-key (kbd "C-x C-1") 'delete-other-windows)
 (global-set-key (kbd "C-x C-2") 'split-window-below)
 (global-set-key (kbd "C-x C-3") 'split-window-right)
+
+(provide 'init-evil)

@@ -11,7 +11,6 @@
       mode-line-modes)
     ))
 (use-package sml-modeline
-  :ensure t
   :config
   (set-face-attribute 'sml-modeline-end-face nil :inherit 'popup-face)
   (sml-modeline-mode))
