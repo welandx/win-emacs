@@ -141,7 +141,7 @@
 
 (use-package ef-themes
   :config
-  (load-theme 'ef-melissa-light t))
+  (load-theme 'ef-day t))
 
 (use-package super-save
   :config
@@ -205,6 +205,7 @@
 (require-feature-module 'init-whitespace)
 (require-feature-module 'init-gdb)
 (require-feature-module 'init-text)
+(require-feature-module 'init-db)
 (require-feature-module 'init-git)
 (require-feature-module 'init-ibuffer)
 (require-feature-module 'init-dired)

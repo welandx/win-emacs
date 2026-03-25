@@ -22,6 +22,8 @@
   ;; (typepad-readonly-mode . perfect-margin-mode)
   :config
   (setq typepad-text-path (concat user-emacs-directory "misc/typepad"))
-  (typepad-load-long))
+  (typepad-load-long)
+  (with-eval-after-load 'meow
+    (add-to-list 'meow-mode-state-list '(typepad-readonly-mode . motion))))
 
 (provide 'init-typepad)

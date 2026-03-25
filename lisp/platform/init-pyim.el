@@ -15,15 +15,16 @@
        :code-split-length 4
        :code-maximum-length 4))
   (pyim-default-scheme 'hmdz)
-  (defun pyim-probe-evil-normal-mode ()
-    "Use English input while Evil is in normal state."
-    (and (bound-and-true-p evil-local-mode)
-         (fboundp 'evil-normal-state-p)
-         (evil-normal-state-p)))
+  (defun pyim-probe-meow-normal-mode ()
+    "Use English input while Meow is in normal or motion state."
+    (or (and (fboundp 'meow-normal-mode-p)
+             (meow-normal-mode-p))
+        (and (fboundp 'meow-motion-mode-p)
+             (meow-motion-mode-p))))
   ;; (setq-default pyim-punctuation-translate-p '(auto yes no))
   (add-hook 'typepad-mode-hook 'pyim-punctuation-toggle)
   (setq-default pyim-english-input-switch-functions
-    '(pyim-probe-evil-normal-mode
+    '(pyim-probe-meow-normal-mode
        pyim-probe-auto-english
        pyim-probe-program-mode)))
 
