@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: display math block
+# key: mk
+# --
+\[
+$0
+\]

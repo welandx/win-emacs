@@ -3,6 +3,12 @@
 (defvar org-download-clipboard-command nil)
 (declare-function org-download-clipboard "org-download")
 (declare-function org-display-inline-images "org")
+(declare-function cdlatex-tab "cdlatex")
+(declare-function denote-rename-buffer-mode "denote")
+(declare-function org-latex-preview "org")
+(declare-function yas-expand "yasnippet")
+(declare-function yas-expand-from-trigger-key "yasnippet")
+(declare-function yas-next-field-or-maybe-expand "yasnippet")
 
 (let ((extra-paths '("/Users/weland/.emacs.d/bin"
                      "/Library/TeX/texbin"
@@ -18,16 +24,65 @@
 
 (setq-default org-agenda-files '("~/notes/daily"))
 
+(defconst my/org-math-note-template
+  "#+TITLE: %s\n#+FILETAGS: :math:\n#+STARTUP: overview inlineimages latexpreview\n#+OPTIONS: toc:t num:nil ^:nil\n\n* Definitions\n\n* Statements\n\n* Examples\n\n* Scratch\n"
+  "Template inserted for math-heavy Org notes.")
+
+(defconst my/org-preview-latex-header
+  "\\documentclass{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{mathtools}
+\\usepackage{amsthm}
+\\usepackage{bm}
+\\usepackage{graphicx}
+\\usepackage{xcolor}
+\\pagestyle{empty}"
+  "Lean LaTeX header used for Org fragment previews.")
+
+(defun my/org-point-in-latex-p ()
+  "Return non-nil when point is inside an Org LaTeX construct."
+  (memq (org-element-type (org-element-context))
+        '(latex-fragment latex-environment entity)))
+
+(defun my/org-math-tab-dwim ()
+  "Use snippets and CDLaTeX in math, otherwise keep normal Org TAB behavior."
+  (interactive)
+  (cond
+   ((org-at-table-p)
+    (org-cycle))
+   ((and (bound-and-true-p yas-minor-mode)
+         (yas-active-snippets))
+    (yas-next-field-or-maybe-expand))
+   ((and (bound-and-true-p org-cdlatex-mode)
+         (my/org-point-in-latex-p))
+    (or (and (bound-and-true-p yas-minor-mode)
+             (yas-expand-from-trigger-key))
+        (cdlatex-tab)))
+   (t
+    (org-cycle))))
+
+(defun my/org-insert-math-note-template ()
+  "Insert a compact template for Denote-based math notes."
+  (interactive)
+  (insert (format my/org-math-note-template
+                  (read-string "Math note title: "))))
+
 (use-package org
   :straight nil
   :bind
   (("C-c a" . org-agenda)
    :map org-mode-map
+   ("<tab>" . my/org-math-tab-dwim)
    ("C-c i p" . org-download-clipboard)
    ("C-c i y" . my/org-paste-image-dwim)
    ("C-c i t" . org-toggle-inline-images)
+   ("C-c x l" . org-latex-preview)
    ("C-c e p" . my/org-insert-pdf-writeup-template)
    ("C-c e h" . my/org-insert-html-writeup-template)
+   ("C-c e m" . my/org-insert-math-note-template)
    ("C-c e w" . my/org-insert-writeup-template))
   :hook
   ((org-mode . visual-line-mode)
@@ -44,7 +99,9 @@
         org-pretty-entities-include-sub-superscripts nil
         org-image-actual-width '(720)
         org-startup-with-inline-images t
-        org-startup-with-latex-preview nil
+        org-startup-with-latex-preview t
+        org-preview-latex-default-process 'dvipng
+        org-format-latex-header my/org-preview-latex-header
         org-export-with-smart-quotes t
         org-html-doctype "html5"
         org-html-html5-fancy t
@@ -58,14 +115,6 @@
         org-latex-default-class "org-zh-writeup"
         org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-        org-latex-minted-options '(("breaklines" "true")
-                                   ("breakanywhere" "true")
-                                   ("breaksymbolleft" "")
-                                   ("breaksymbolright" "")
-                                   ("autogobble" "true")
-                                   ("fontsize" "\\small")
-                                   ("encoding" "utf8")
-                                   ("tabsize" "2"))
         org-latex-packages-alist '(("" "graphicx" t)
                                    ("" "grffile" t)
                                    ("" "longtable" nil)
@@ -73,10 +122,23 @@
                                    ("" "wrapfig" nil)
                                    ("" "float" nil)
                                    ("" "capt-of" nil)
-                                   ("" "fvextra" nil)
-                                   ("" "minted" nil)
                                    ("" "amsmath" t)
-                                   ("" "amssymb" t)))
+                                   ("" "amssymb" t)
+                                   ("" "mathtools" t)
+                                   ("" "amsthm" t)
+                                   ("" "bm" t))
+        org-latex-minted-options '(("breaklines" "true")
+                                   ("breakanywhere" "true")
+                                   ("breaksymbolleft" "")
+                                   ("breaksymbolright" "")
+                                   ("autogobble" "true")
+                                   ("fontsize" "\\small")
+                                   ("encoding" "utf8")
+                                   ("tabsize" "2")))
+
+  (let ((dvipng-process (assoc 'dvipng org-preview-latex-process-alist)))
+    (when dvipng-process
+      (plist-put (cdr dvipng-process) :latex-header my/org-preview-latex-header)))
 
   (add-to-list 'org-latex-classes
                '("org-zh-writeup"
@@ -126,6 +188,37 @@
         org-modern-block-name nil)
   :config
   (global-org-modern-mode 1))
+
+(use-package tex
+  :straight auctex
+  :defer t)
+
+(use-package denote
+  :bind
+  (:prefix-map my/denote-map
+               :prefix "C-c d"
+               ("d" . denote)
+               ("f" . denote-open-or-create)
+               ("r" . denote-rename-file)
+               ("l" . denote-link-or-create))
+  :hook
+  (org-mode . denote-rename-buffer-mode)
+  :config
+  (setq denote-directory (expand-file-name "~/Documents/org")
+        denote-known-keywords '("math" "algebra" "analysis" "geometry" "logic" "topology")
+        denote-infer-keywords t
+        denote-sort-keywords t
+        denote-rename-buffer-format "[D] %t"))
+
+(use-package cdlatex
+  :after org
+  :hook
+  (org-mode . turn-on-org-cdlatex)
+  :bind
+  (:map org-mode-map
+        ("C-c {" . cdlatex-environment))
+  :config
+  (setq cdlatex-use-dollar-to-ensure-math nil))
 
 (defconst my/org-html-style
   "<style>

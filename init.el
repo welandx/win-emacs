@@ -160,8 +160,16 @@
     (setq nerd-icons-font-family "FantasqueSansM Nerd Font Mono")))
 
 (use-package yasnippet
+  :init
+  (setq yas-snippet-dirs
+        (list (expand-file-name "snippets" user-emacs-directory))
+        yas-trigger-key "TAB")
   :config
-  (yas-global-mode 1))
+  (yas-reload-all)
+  (yas-global-mode 1)
+  (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand-from-trigger-key)
+  (define-key yas-minor-mode-map (kbd "<tab>") #'yas-expand-from-trigger-key)
+  (define-key yas-minor-mode-map (kbd "C-c y") #'yas-expand-from-trigger-key))
 
 (use-package recentf
   :straight nil
