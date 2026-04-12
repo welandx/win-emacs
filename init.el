@@ -167,8 +167,6 @@
   :config
   (yas-reload-all)
   (yas-global-mode 1)
-  (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand-from-trigger-key)
-  (define-key yas-minor-mode-map (kbd "<tab>") #'yas-expand-from-trigger-key)
   (define-key yas-minor-mode-map (kbd "C-c y") #'yas-expand-from-trigger-key))
 
 (use-package recentf
