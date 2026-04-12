@@ -52,7 +52,8 @@
      "Liberation Sans"
      "Segoe UI")
     :symbol
-    ((:family "Segoe UI Symbol" :scale 0.7 :prepend t)
+     ((:family "Apple Symbols" :scale 0.7 :prepend t)
+       (:family "Segoe UI Symbol" :scale 0.7 :prepend t)
      (:family "Symbola" :scale 0.7 :prepend t)
      (:family "Symbol" :scale 0.7 :prepend t))
     :emoji
