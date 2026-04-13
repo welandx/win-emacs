@@ -22,7 +22,27 @@
   (dolist (dir (reverse extra-paths))
     (add-to-list 'exec-path dir)))
 
-(setq-default org-agenda-files '("~/notes/daily"))
+(defconst my/org-directory (expand-file-name "~/Documents/org")
+  "Root directory for Org notes and agenda files.")
+
+(defconst my/org-archive-directory
+  (expand-file-name "archive" my/org-directory)
+  "Directory used for archived Org tasks.")
+
+(defun my/org-agenda-files ()
+  "Return Org files under `my/org-directory' suitable for agenda use."
+  (when (file-directory-p my/org-directory)
+    (seq-filter
+     (lambda (file)
+       (and (not (string-match-p "/\\.?#" file))
+            (not (string-match-p "/assets/" file))
+            (not (string-match-p "/archive/" file))
+            (not (string-match-p "_archive\\.org\\'" file))))
+     (directory-files-recursively my/org-directory "\\.org\\'"))))
+
+(defun my/org-refresh-agenda-files (&rest _)
+  "Refresh `org-agenda-files' from `my/org-directory'."
+  (setq org-agenda-files (my/org-agenda-files)))
 
 (defconst my/org-math-note-template
   "#+TITLE: %s\n#+FILETAGS: :math:\n#+STARTUP: overview inlineimages latexpreview\n#+OPTIONS: toc:t num:nil ^:nil\n\n* Definitions\n\n* Statements\n\n* Examples\n\n* Scratch\n"
@@ -93,7 +113,54 @@
   (require 'ox-latex)
   (require 'org-tempo)
 
-  (setq org-ellipsis " ▾"
+  (setq org-directory my/org-directory
+        org-default-notes-file (expand-file-name "inbox.org" org-directory)
+        org-agenda-window-setup 'current-window
+        org-agenda-span 'day
+        org-agenda-start-with-log-mode t
+        org-agenda-start-with-follow-mode nil
+        org-agenda-skip-deadline-prewarning-if-scheduled t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-timestamp-if-done t
+        org-agenda-block-separator ?─
+        org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
+                                      (todo priority-down category-keep)
+                                      (tags priority-down category-keep)
+                                      (search category-keep))
+        org-agenda-custom-commands
+        '(("d" "Dashboard"
+           ((agenda "" ((org-agenda-overriding-header "Today")))
+            (todo "NEXT"
+                  ((org-agenda-overriding-header "Next Actions")))
+            (todo "WAIT"
+                  ((org-agenda-overriding-header "Waiting")))
+            (todo "TODO"
+                  ((org-agenda-overriding-header "Inbox / Backlog")))))
+          ("n" "Next Actions" todo "NEXT")
+          ("w" "Waiting" todo "WAIT")
+          ("r" "Weekly Review"
+           ((agenda "" ((org-agenda-span 7)
+                        (org-agenda-start-on-weekday 1)
+                        (org-agenda-overriding-header "This Week")))
+            (todo "TODO|NEXT|WAIT"
+                  ((org-agenda-overriding-header "Open Tasks"))))))
+        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)"))
+        org-todo-keyword-faces '(("NEXT" . "DeepSkyBlue")
+                                 ("WAIT" . "goldenrod")
+                                 ("CANCELLED" . "gray50"))
+        org-log-done 'time
+        org-log-into-drawer t
+        org-log-reschedule 'time
+        org-log-redeadline 'time
+        org-enforce-todo-dependencies t
+        org-enforce-todo-checkbox-dependencies t
+        org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil
+        org-archive-location
+        (concat (file-name-as-directory my/org-archive-directory) "%s_archive::")
+        org-ellipsis " ▾"
         org-hide-emphasis-markers nil
         org-pretty-entities t
         org-pretty-entities-include-sub-superscripts nil
@@ -135,6 +202,11 @@
                                    ("fontsize" "\\small")
                                    ("encoding" "utf8")
                                    ("tabsize" "2")))
+
+  (make-directory org-directory t)
+  (make-directory my/org-archive-directory t)
+  (my/org-refresh-agenda-files)
+  (advice-add 'org-agenda :before #'my/org-refresh-agenda-files)
 
   (let ((dvipng-process (assoc 'dvipng org-preview-latex-process-alist)))
     (when dvipng-process
@@ -204,7 +276,7 @@
   :hook
   (org-mode . denote-rename-buffer-mode)
   :config
-  (setq denote-directory (expand-file-name "~/Documents/org")
+  (setq denote-directory my/org-directory
         denote-known-keywords '("math" "algebra" "analysis" "geometry" "logic" "topology")
         denote-infer-keywords t
         denote-sort-keywords t
@@ -296,16 +368,17 @@ th, td {
   "Base Org writeup template.")
 
 (defun my/org-buffer-image-dir ()
-  "Return a relative asset directory for the current Org buffer."
-  (let ((base (if buffer-file-name
-                  (file-name-base buffer-file-name)
-                "org-buffer")))
-    (format "%s-assets" base)))
+  "Return the image directory for the current Org buffer."
+  (if buffer-file-name
+      (expand-file-name "assets" (file-name-directory buffer-file-name))
+    (expand-file-name "assets" default-directory)))
 
 (defun my/org-mode-setup ()
   "Configure Org mode for image-heavy writeups."
   (setq-local line-spacing 0.12)
   (setq-local org-download-image-dir (my/org-buffer-image-dir))
+  (unless (file-directory-p org-download-image-dir)
+    (make-directory org-download-image-dir t))
   (setq-local org-format-latex-options
               (plist-put org-format-latex-options :scale 1.8))
   (org-display-inline-images))

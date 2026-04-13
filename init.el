@@ -189,17 +189,17 @@
 
 (when *is-a-win*
   (set-fontset-font t 'han "霞鹜文楷 屏幕阅读版")
-  (setq org-directory "~/notes")
+  (setq org-directory "~/Documents/org")
   (require-platform-module 'init-gbk)
   (require-platform-module 'init-win))
 
 (when *is-a-mac*
-  (setq-default org-directory "~/notes")
+  (setq-default org-directory "~/Documents/org")
   (require-platform-module 'init-osx-keys)
   (require-platform-module 'init-exec-path))
 
 (when *is-a-linux*
-  (setq-default org-directory "~/notes")
+  (setq-default org-directory "~/Documents/org")
   (require-platform-module 'init-pyim)
   (require-platform-module 'init-typepad))
 
