@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+id=""
+state=""
+schedule=""
+deadline=""
+note=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --id)
+      id="${2:-}"
+      shift 2
+      ;;
+    --state)
+      state="${2:-}"
+      shift 2
+      ;;
+    --schedule)
+      schedule="${2:-}"
+      shift 2
+      ;;
+    --deadline)
+      deadline="${2:-}"
+      shift 2
+      ;;
+    --note)
+      note="${2:-}"
+      shift 2
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "$id" ]]; then
+  echo "--id is required" >&2
+  exit 1
+fi
+
+export ORG_AI_ID="$id"
+export ORG_AI_STATE="$state"
+export ORG_AI_SCHEDULE="$schedule"
+export ORG_AI_DEADLINE="$deadline"
+export ORG_AI_NOTE="$note"
+
+emacs --batch -Q \
+  --load "$ROOT/lisp/feature/init-org-ai.el" \
+  --eval "(princ (json-encode (my/org-ai-update-task
+    (getenv \"ORG_AI_ID\")
+    (getenv \"ORG_AI_STATE\")
+    (getenv \"ORG_AI_SCHEDULE\")
+    (getenv \"ORG_AI_DEADLINE\")
+    (getenv \"ORG_AI_NOTE\"))))"

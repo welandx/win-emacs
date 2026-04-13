@@ -1,0 +1,4 @@
+interface:
+  display_name: "Org Todo Agent"
+  short_description: "Capture and tidy Org agenda tasks."
+  default_prompt: "Describe work in natural language, convert it into Org tasks, infer schedule or deadline when needed, and keep the agenda organized."

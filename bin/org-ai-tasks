@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+emacs --batch -Q \
+  --load "$ROOT/lisp/feature/init-org-ai.el" \
+  --eval "(princ (my/org-ai-export-open-tasks))"

@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+title=""
+note=""
+schedule=""
+deadline=""
+tags=""
+state=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --title)
+      title="${2:-}"
+      shift 2
+      ;;
+    --note)
+      note="${2:-}"
+      shift 2
+      ;;
+    --schedule)
+      schedule="${2:-}"
+      shift 2
+      ;;
+    --deadline)
+      deadline="${2:-}"
+      shift 2
+      ;;
+    --tags)
+      tags="${2:-}"
+      shift 2
+      ;;
+    --state)
+      state="${2:-}"
+      shift 2
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "$title" ]]; then
+  echo "--title is required" >&2
+  exit 1
+fi
+
+export ORG_AI_TITLE="$title"
+export ORG_AI_NOTE="$note"
+export ORG_AI_SCHEDULE="$schedule"
+export ORG_AI_DEADLINE="$deadline"
+export ORG_AI_TAGS="$tags"
+export ORG_AI_STATE="$state"
+
+emacs --batch -Q \
+  --load "$ROOT/lisp/feature/init-org-ai.el" \
+  --eval "(princ (json-encode (my/org-ai-capture-task
+    (getenv \"ORG_AI_TITLE\")
+    (getenv \"ORG_AI_NOTE\")
+    (getenv \"ORG_AI_SCHEDULE\")
+    (getenv \"ORG_AI_DEADLINE\")
+    (getenv \"ORG_AI_TAGS\")
+    (getenv \"ORG_AI_STATE\"))))"

@@ -1,5 +1,7 @@
 ;;; init-org.el --- Org writeup helpers -*- lexical-binding: t; -*-
 
+(require 'init-org-ai)
+
 (defvar org-download-clipboard-command nil)
 (declare-function org-download-clipboard "org-download")
 (declare-function org-display-inline-images "org")
@@ -61,6 +63,79 @@
 \\usepackage{xcolor}
 \\pagestyle{empty}"
   "Lean LaTeX header used for Org fragment previews.")
+
+(defconst my/org-html-style
+  "<style>
+body {
+  margin: 0 auto;
+  max-width: 980px;
+  padding: 2.5rem 1.25rem 4rem;
+  color: #1f2328;
+  background: #f7f4ec;
+  font-family: \"LXGW WenKai Screen\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei UI\", sans-serif;
+  line-height: 1.75;
+}
+#content {
+  background: rgba(255,255,255,0.82);
+  padding: 2.2rem 2rem 3rem;
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(62, 46, 24, 0.08);
+}
+h1, h2, h3, h4 {
+  color: #2d2416;
+  line-height: 1.3;
+}
+h1.title {
+  margin-bottom: 0.4rem;
+  font-size: 2.2rem;
+}
+a {
+  color: #8a4b08;
+}
+pre, code {
+  font-family: \"SauceCodePro Nerd Font Mono\", \"SF Mono\", \"Menlo\", monospace;
+}
+pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f2ede3;
+}
+blockquote {
+  margin: 1.2rem 0;
+  padding: 0.2rem 1rem;
+  border-left: 4px solid #c58940;
+  background: #fbf7f0;
+}
+img {
+  display: block;
+  max-width: 100%;
+  margin: 1.2rem auto;
+  border-radius: 10px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+th, td {
+  border: 1px solid #d6ccb8;
+  padding: 0.6rem 0.8rem;
+}
+</style>"
+  "Default HTML style used for Org writeups.")
+
+(defconst my/org-writeup-template
+  "#+TITLE: Writeup Title
+#+AUTHOR: weland
+#+DATE: %U
+#+LANGUAGE: zh-CN
+#+OPTIONS: toc:t num:t ^:nil broken-links:t
+#+STARTUP: inlineimages
+#+LATEX_CLASS: org-zh-writeup
+#+LATEX_COMPILER: xelatex
+#+HTML_HEAD_EXTRA: <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n"
+  "Base Org writeup template.")
 
 (defun my/org-point-in-latex-p ()
   "Return non-nil when point is inside an Org LaTeX construct."
@@ -137,6 +212,18 @@
                   ((org-agenda-overriding-header "Waiting")))
             (todo "TODO"
                   ((org-agenda-overriding-header "Inbox / Backlog")))))
+          ("A" "AI Task Board"
+           ((tags-todo "+ai/TODO"
+                       ((org-agenda-overriding-header "AI Inbox / Needs Triage")
+                        (org-agenda-skip-function
+                         '(org-agenda-skip-entry-if 'scheduled 'deadline))))
+            (tags-todo "+ai/NEXT"
+                       ((org-agenda-overriding-header "AI Next Actions")))
+            (agenda "" ((org-agenda-span 7)
+                        (org-agenda-overriding-header "AI Schedule")
+                        (org-agenda-tag-filter-preset '("+ai"))))
+            (tags-todo "+ai/WAIT"
+                       ((org-agenda-overriding-header "AI Waiting")))))
           ("n" "Next Actions" todo "NEXT")
           ("w" "Waiting" todo "WAIT")
           ("r" "Weekly Review"
@@ -155,6 +242,16 @@
         org-log-redeadline 'time
         org-enforce-todo-dependencies t
         org-enforce-todo-checkbox-dependencies t
+        org-tag-alist '(("ai" . ?a)
+                        ("deep" . ?d)
+                        ("quick" . ?q)
+                        ("meeting" . ?m)
+                        ("errand" . ?e))
+        org-capture-templates
+        `(("a" "AI task" entry
+           (file+headline ,my/org-ai-inbox-file ,my/org-ai-inbox-heading)
+           "** TODO %^{Title} :ai:\n:PROPERTIES:\n:CAPTURED_BY: manual\n:CREATED_AT: %U\n:END:\n%?"
+           :empty-lines 1))
         org-refile-targets '((org-agenda-files :maxlevel . 3))
         org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil
@@ -291,81 +388,6 @@
         ("C-c {" . cdlatex-environment))
   :config
   (setq cdlatex-use-dollar-to-ensure-math nil))
-
-(defconst my/org-html-style
-  "<style>
-body {
-  margin: 0 auto;
-  max-width: 980px;
-  padding: 2.5rem 1.25rem 4rem;
-  color: #1f2328;
-  background: #f7f4ec;
-  font-family: \"LXGW WenKai Screen\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei UI\", sans-serif;
-  line-height: 1.75;
-}
-#content {
-  background: rgba(255,255,255,0.82);
-  padding: 2.2rem 2rem 3rem;
-  border-radius: 18px;
-  box-shadow: 0 18px 60px rgba(62, 46, 24, 0.08);
-}
-h1, h2, h3, h4 {
-  color: #2d2416;
-  line-height: 1.3;
-}
-h1.title {
-  margin-bottom: 0.4rem;
-  font-size: 2.2rem;
-}
-a {
-  color: #8a4b08;
-}
-pre, code {
-  font-family: \"SauceCodePro Nerd Font Mono\", \"SF Mono\", \"Menlo\", monospace;
-}
-pre {
-  overflow-x: auto;
-  padding: 1rem;
-  border-radius: 12px;
-  background: #f2ede3;
-}
-blockquote {
-  margin: 1.2rem 0;
-  padding: 0.2rem 1rem;
-  border-left: 4px solid #c58940;
-  background: #fbf7f0;
-}
-img {
-  display: block;
-  max-width: 100%;
-  margin: 1.2rem auto;
-  border-radius: 10px;
-}
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5rem 0;
-}
-th, td {
-  border: 1px solid #d6ccb8;
-  padding: 0.6rem 0.8rem;
-}
-</style>"
-  "Default HTML style used for Org writeups.")
-
-(defconst my/org-writeup-template
-  "#+TITLE: Writeup Title
-#+AUTHOR: weland
-#+DATE: %U
-#+LANGUAGE: zh-CN
-#+OPTIONS: toc:t num:t ^:nil broken-links:t
-#+STARTUP: inlineimages
-#+LATEX_CLASS: org-zh-writeup
-#+LATEX_COMPILER: xelatex
-#+HTML_HEAD_EXTRA: <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-
-"
-  "Base Org writeup template.")
 
 (defun my/org-buffer-image-dir ()
   "Return the image directory for the current Org buffer."

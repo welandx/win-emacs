@@ -210,6 +210,7 @@
 
 (require-feature-module 'init-whitespace)
 (require-feature-module 'init-gdb)
+(require-feature-module 'init-org-ai)
 (require-feature-module 'init-org)
 (require-feature-module 'init-text)
 (require-feature-module 'init-db)
