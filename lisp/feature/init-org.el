@@ -354,7 +354,11 @@ th, td {
   :init
   (setq org-modern-table nil
         org-modern-keyword nil
-        org-modern-block-name nil)
+        org-modern-block-name nil
+        ;; Avoid rare triangle glyphs like ⯆ which some mono fonts render poorly.
+        org-modern-fold-stars '(("▶" . "▼")
+                                ("▷" . "▽")
+                                ("▸" . "▾")))
   :config
   (global-org-modern-mode 1))
 

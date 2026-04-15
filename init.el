@@ -23,7 +23,9 @@
 
 (setq straight-use-package-by-default t)
 (straight-use-package 'use-package)
+(straight-use-package 'org)
 (require 'use-package)
+(require 'org)
 
 (require 'init-lib)
 
@@ -218,6 +220,8 @@
 (require-feature-module 'init-ibuffer)
 (require-feature-module 'init-dired)
 (require-feature-module 'init-highlight)
+(require-feature-module 'init-telega)
+(require-feature-module 'init-appine)
 (require-feature-module 'init-dict)
 (require-feature-module 'init-tab)
 (require-feature-module 'init-corfu)
