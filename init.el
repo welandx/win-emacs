@@ -23,7 +23,34 @@
 
 (setq straight-use-package-by-default t)
 (straight-use-package 'use-package)
-(straight-use-package 'org)
+
+(use-package org
+  :defer
+  :straight `(org
+              :fork (:host nil
+                     :repo "https://git.tecosaur.net/tec/org-mode.git"
+                     :branch "dev"
+                     :remote "tecosaur")
+              :files (:defaults "etc")
+              :build t
+              :pre-build
+              (with-temp-file "org-version.el"
+               (require 'lisp-mnt)
+               (let ((version
+                      (with-temp-buffer
+                        (insert-file-contents "lisp/org.el")
+                        (lm-header "version")))
+                     (git-version
+                      (string-trim
+                       (with-temp-buffer
+                         (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+                         (buffer-string)))))
+                (insert
+                 (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+                 (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+                 "(provide 'org-version)\n")))
+              :pin nil))
+
 (require 'use-package)
 (require 'org)
 
@@ -66,6 +93,9 @@
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum))
 
+(add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
 (set-window-scroll-bars (minibuffer-window) nil nil)
 (toggle-word-wrap)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -143,7 +173,7 @@
 
 (use-package ef-themes
   :config
-  (load-theme 'ef-day t))
+  (load-theme 'ef-frost t))
 
 (use-package super-save
   :config
@@ -220,12 +250,15 @@
 (require-feature-module 'init-ibuffer)
 (require-feature-module 'init-dired)
 (require-feature-module 'init-highlight)
+(require-feature-module 'init-posframe)
 (require-feature-module 'init-telega)
 (require-feature-module 'init-appine)
+(require-feature-module 'init-ace-pinyin)
 (require-feature-module 'init-dict)
 (require-feature-module 'init-tab)
 (require-feature-module 'init-corfu)
 (require-feature-module 'init-lsp)
+(require-feature-module 'init-web)
 
 (run-with-idle-timer
  2 nil

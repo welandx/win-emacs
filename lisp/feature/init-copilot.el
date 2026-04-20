@@ -20,7 +20,7 @@
   :config
       (setq agent-shell-anthropic-authentication
           (agent-shell-anthropic-make-authentication
-           :api-key "sk-kimi-c1nf9dIUdI36llTaB5CadN3AA3HDwJhy2fieUNkQv9h55VAIfth7bmzrGMhNZNhb"))
+           :api-key ""))
 
     (setq agent-shell-anthropic-claude-environment
           (agent-shell-make-environment-variables

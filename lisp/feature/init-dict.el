@@ -29,18 +29,26 @@
   (or (my/emt-cjk-char-p (char-after))
       (my/emt-cjk-char-p (char-before))))
 
+(defun my/emt-word-index (beg end)
+  "Return a safe tokenizer index for the CJK run bounded by BEG and END."
+  (let* ((len (- end beg))
+         (after-is-cjk (my/emt-cjk-char-p (char-after)))
+         (before-is-cjk (my/emt-cjk-char-p (char-before))))
+    (cond
+     ((<= len 0) 0)
+     ((and before-is-cjk (not after-is-cjk))
+      (max 0 (1- (- (point) beg))))
+     ((<= (point) beg) 0)
+     ((>= (point) end) (1- len))
+     (t (- (point) beg)))))
+
 (defun my/emt-bounds-of-word ()
   "Return bounds of the current CJK-aware word for Meow and thing-at-point."
   (if (and (my/emt-ready-p)
            (my/emt-cjk-context-p))
       (pcase-let* ((`(,beg . ,end) (emt--get-bounds-at-point 'all))
                    (text (buffer-substring-no-properties beg end))
-                   (len (length text))
-                   (index (cond
-                           ((<= len 0) 0)
-                           ((<= (point) beg) 0)
-                           ((>= (point) end) (1- len))
-                           (t (- (point) beg))))
+                   (index (my/emt-word-index beg end))
                    (`(,word-beg . ,word-end)
                     (emt--word-at-point-or-forward-helper
                      text
@@ -76,6 +84,7 @@
   (after-init . emt-mode)
   :config
   (with-eval-after-load 'meow
+    (put 'emt-word 'bounds-of-thing-at-point #'my/emt-bounds-of-word)
     (put 'emt-word 'forward-op #'my/emt-forward-word)
     (put 'emt-word 'beginning-op #'my/emt-beginning-of-word)
     (put 'emt-word 'end-op #'my/emt-end-of-word)

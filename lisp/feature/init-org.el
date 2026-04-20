@@ -6,8 +6,6 @@
 (declare-function org-download-clipboard "org-download")
 (declare-function org-display-inline-images "org")
 (declare-function cdlatex-tab "cdlatex")
-(declare-function denote-rename-buffer-mode "denote")
-(declare-function org-latex-preview "org")
 (declare-function yas-expand "yasnippet")
 (declare-function yas-expand-from-trigger-key "yasnippet")
 (declare-function yas-next-field-or-maybe-expand "yasnippet")
@@ -47,7 +45,7 @@
   (setq org-agenda-files (my/org-agenda-files)))
 
 (defconst my/org-math-note-template
-  "#+TITLE: %s\n#+FILETAGS: :math:\n#+STARTUP: overview inlineimages latexpreview\n#+OPTIONS: toc:t num:nil ^:nil\n\n* Definitions\n\n* Statements\n\n* Examples\n\n* Scratch\n"
+  "#+TITLE: %s\n#+FILETAGS: :math:\n#+STARTUP: overview inlineimages\n#+OPTIONS: toc:t num:nil ^:nil\n\n* Definitions\n\n* Statements\n\n* Examples\n\n* Scratch\n"
   "Template inserted for math-heavy Org notes.")
 
 (defconst my/org-preview-latex-header
@@ -133,9 +131,22 @@ th, td {
 #+OPTIONS: toc:t num:t ^:nil broken-links:t
 #+STARTUP: inlineimages
 #+LATEX_CLASS: org-zh-writeup
-#+LATEX_COMPILER: xelatex
+#+LATEX_COMPILER: lualatex
 #+HTML_HEAD_EXTRA: <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n"
   "Base Org writeup template.")
+
+(defconst my/org-alert-active-todo-keywords '("TODO" "NEXT")
+  "TODO keywords that should produce macOS Org reminders.")
+
+(defun my/org-alert-match-string ()
+  "Build the `org-alert' match string for active scheduled tasks."
+  (let ((todo-clause
+         (mapconcat (lambda (keyword)
+                      (format "TODO=\"%s\"" keyword))
+                    my/org-alert-active-todo-keywords
+                    "|")))
+    (format "(%s)+(SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"|DEADLINE>=\"<today>\"+DEADLINE<\"<tomorrow>\")"
+            todo-clause)))
 
 (defun my/org-point-in-latex-p ()
   "Return non-nil when point is inside an Org LaTeX construct."
@@ -174,7 +185,7 @@ th, td {
    ("C-c i p" . org-download-clipboard)
    ("C-c i y" . my/org-paste-image-dwim)
    ("C-c i t" . org-toggle-inline-images)
-   ("C-c x l" . org-latex-preview)
+    ("C-c x l" . org-latex-preview)
    ("C-c e p" . my/org-insert-pdf-writeup-template)
    ("C-c e h" . my/org-insert-html-writeup-template)
    ("C-c e m" . my/org-insert-math-note-template)
@@ -263,9 +274,7 @@ th, td {
         org-pretty-entities-include-sub-superscripts nil
         org-image-actual-width '(720)
         org-startup-with-inline-images t
-        org-startup-with-latex-preview t
-        org-preview-latex-default-process 'dvipng
-        org-format-latex-header my/org-preview-latex-header
+        org-startup-with-latex-preview nil
         org-export-with-smart-quotes t
         org-html-doctype "html5"
         org-html-html5-fancy t
@@ -274,11 +283,11 @@ th, td {
         org-html-head-include-scripts nil
         org-html-postamble nil
         org-html-head-extra my/org-html-style
-        org-latex-compiler "xelatex"
+        org-latex-compiler "lualatex"
         org-latex-src-block-backend 'minted
         org-latex-default-class "org-zh-writeup"
-        org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-                                "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+        org-latex-pdf-process '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+                                "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f")
         org-latex-packages-alist '(("" "graphicx" t)
                                    ("" "grffile" t)
                                    ("" "longtable" nil)
@@ -304,10 +313,6 @@ th, td {
   (make-directory my/org-archive-directory t)
   (my/org-refresh-agenda-files)
   (advice-add 'org-agenda :before #'my/org-refresh-agenda-files)
-
-  (let ((dvipng-process (assoc 'dvipng org-preview-latex-process-alist)))
-    (when dvipng-process
-      (plist-put (cdr dvipng-process) :latex-header my/org-preview-latex-header)))
 
   (add-to-list 'org-latex-classes
                '("org-zh-writeup"
@@ -362,6 +367,40 @@ th, td {
   :config
   (global-org-modern-mode 1))
 
+(use-package org-latex-preview
+  :straight nil
+  :after org
+  :config
+  (plist-put org-latex-preview-appearance-options
+             :page-width 0.8)
+  (setq org-latex-preview-process-precompile nil)
+  (setf (alist-get "lualatex" org-latex-preview-compiler-command-map nil nil #'equal)
+        "lualatex")
+  (setq org-latex-preview--include-preview-string
+        "\n\\usepackage[active,tightpage,auctex]{preview}\n")
+  (setq org-latex-preview-preamble
+        (string-replace "\\documentclass{article}"
+                        "\\documentclass[fontset=none]{ctexart}
+\\setCJKmainfont{Songti SC}
+\\setCJKsansfont{PingFang SC}
+\\setCJKmonofont{Songti SC}"
+                        org-latex-preview-preamble))
+  (setf (alist-get 'dvisvgm org-latex-preview-process-alist)
+        '(:programs ("lualatex" "dvisvgm")
+          :description "pdf > svg (lualatex)"
+          :message "you need to install the programs: lualatex, dvisvgm, and mutool (mupdf-tools)."
+          :image-input-type "pdf"
+          :image-output-type "svg"
+          :latex-compiler ("lualatex -interaction nonstopmode -output-directory %o %f")
+          :latex-precompiler ("lualatex -output-directory %o -ini -jobname=%b \"&lualatex\" mylatexformat.ltx %f")
+          :image-converter ("dvisvgm --pdf --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview -o %B-%%9p.svg %f")))
+  (add-hook 'org-mode-hook 'org-latex-preview-mode)
+  (setq org-latex-preview-mode-display-live t
+        org-latex-preview-mode-update-delay 0.25))
+
+(when *is-a-mac*
+  (setenv "LIBGS" "/opt/homebrew/lib/libgs.dylib"))
+
 (use-package tex
   :straight auctex
   :defer t)
@@ -405,8 +444,6 @@ th, td {
   (setq-local org-download-image-dir (my/org-buffer-image-dir))
   (unless (file-directory-p org-download-image-dir)
     (make-directory org-download-image-dir t))
-  (setq-local org-format-latex-options
-              (plist-put org-format-latex-options :scale 1.8))
   (org-display-inline-images))
 
 (defun my/org-paste-image-dwim ()
@@ -450,6 +487,94 @@ th, td {
   (interactive)
   (my/org--insert-template
    "#+HTML_HEAD_EXTRA: <meta name=\"color-scheme\" content=\"light\">\n"))
+
+(defun my/org--osascript-escape (text)
+  "Escape TEXT for inclusion in an AppleScript string literal."
+  (let ((escaped (replace-regexp-in-string "\\\\" "\\\\\\\\" (or text "") t t)))
+    (replace-regexp-in-string "\"" "\\\\\"" escaped t t)))
+
+(defun my/org--trim-message (text)
+  "Trim leading and trailing whitespace from TEXT."
+  (replace-regexp-in-string
+   "\\`[[:space:]\n\r\t]+\\|[[:space:]\n\r\t]+\\'"
+   ""
+   (or text "")))
+
+(defun my/org--mac-notify-via-notifications (title message)
+  "Send a macOS notification with TITLE and MESSAGE via Emacs notifications."
+  (when (require 'notifications nil t)
+    (notifications-notify :title title
+                          :body message
+                          :app-name "Emacs")
+    t))
+
+(defun my/org--mac-notify-via-terminal-notifier (title message)
+  "Send a macOS notification with TITLE and MESSAGE via terminal-notifier."
+  (let ((notifier (executable-find "terminal-notifier")))
+    (when notifier
+      (start-process "my-org-terminal-notifier"
+                     nil
+                     notifier
+                     "-title" title
+                     "-message" message
+                     "-sender" "org.gnu.Emacs")
+      t)))
+
+(defun my/org--mac-notify-via-osascript (title message)
+  "Send a macOS notification with TITLE and MESSAGE via AppleScript."
+  (let ((osascript (executable-find "osascript")))
+    (when osascript
+      (start-process
+       "my-org-osascript-notify"
+       nil
+       osascript
+       "-e"
+       (format "display notification \"%s\" with title \"%s\""
+               (my/org--osascript-escape message)
+               (my/org--osascript-escape title)))
+      t)))
+
+(defun my/org-alert--mac-notifier (info)
+  "Deliver alert INFO to macOS notification backends."
+  (let* ((title (or (plist-get info :title) "Org Agenda"))
+         (message (or (plist-get info :message) ""))
+         (trimmed-message (my/org--trim-message message)))
+    (or (my/org--mac-notify-via-notifications title trimmed-message)
+        (my/org--mac-notify-via-terminal-notifier title trimmed-message)
+        (my/org--mac-notify-via-osascript title trimmed-message)
+        (message "%s: %s" title trimmed-message))))
+
+(use-package alert
+  :commands (alert)
+  :config
+  (if *is-a-mac*
+      (progn
+        (alert-define-style 'my-macos-notifier
+          :title "macOS Notification Center"
+          :notifier #'my/org-alert--mac-notifier)
+        (setq alert-default-style 'my-macos-notifier))
+    (setq alert-default-style 'message)))
+
+(use-package org-alert
+  :after (org alert)
+  :commands (org-alert-enable)
+  :init
+  (setq org-alert-interval 300
+        org-alert-notify-cutoff 10
+        org-alert-notify-after-event-cutoff 0
+        org-alert-notification-title "Org Agenda"
+        org-alert-match-string (my/org-alert-match-string))
+  :config
+  (unless noninteractive
+    (org-alert-enable)))
+
+(defun my/org-test-notification ()
+  "Send a test Org notification through the configured alert backend."
+  (interactive)
+  (require 'alert)
+  (alert "This is a test notification from your Org reminder pipeline."
+         :title "Org Agenda"
+         :severity 'normal))
 
 (provide 'init-org)
 ;;; init-org.el ends here
