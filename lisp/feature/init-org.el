@@ -1,14 +1,27 @@
-;;; init-org.el --- Org writeup helpers -*- lexical-binding: t; -*-
+;;; init-org.el --- Org configuration -*- lexical-binding: t; -*-
 
-(require 'init-org-ai)
+;; Sections:
+;;   Shared helpers  — HTML CSS, LaTeX writeup class, TAB dwim
+;;   Core org        — directories, agenda, capture, todo, log, export
+;;   Image paste     — org-download
+;;   Visual          — org-modern
+;;   LaTeX preview   — ctex + lualatex + dvisvgm(pdf) + mutool
+;;   CDLaTeX         — math input
+;;   Denote          — file naming / notes
+;;   AucTeX          — tex editing
+;;   Notifications   — alert osx-notifier
 
-(defvar org-download-clipboard-command nil)
+(require 'init-org-ai)  ; provides my/org-directory, my/org-ai-*, shared todo keywords
+
 (declare-function org-download-clipboard "org-download")
 (declare-function org-display-inline-images "org")
 (declare-function cdlatex-tab "cdlatex")
-(declare-function yas-expand "yasnippet")
+(declare-function yas-active-snippets "yasnippet")
 (declare-function yas-expand-from-trigger-key "yasnippet")
 (declare-function yas-next-field-or-maybe-expand "yasnippet")
+
+
+;;;; PATH for TeX binaries
 
 (let ((extra-paths '("/Users/weland/.emacs.d/bin"
                      "/Library/TeX/texbin"
@@ -16,51 +29,17 @@
                      "/opt/homebrew/bin")))
   (setenv "PATH"
           (mapconcat #'identity
-                     (append extra-paths
-                             (list (getenv "PATH")))
+                     (append extra-paths (list (getenv "PATH")))
                      ":"))
   (dolist (dir (reverse extra-paths))
     (add-to-list 'exec-path dir)))
 
-(defconst my/org-directory (expand-file-name "~/Documents/org")
-  "Root directory for Org notes and agenda files.")
+
+;;;; Shared helpers
 
 (defconst my/org-archive-directory
   (expand-file-name "archive" my/org-directory)
   "Directory used for archived Org tasks.")
-
-(defun my/org-agenda-files ()
-  "Return Org files under `my/org-directory' suitable for agenda use."
-  (when (file-directory-p my/org-directory)
-    (seq-filter
-     (lambda (file)
-       (and (not (string-match-p "/\\.?#" file))
-            (not (string-match-p "/assets/" file))
-            (not (string-match-p "/archive/" file))
-            (not (string-match-p "_archive\\.org\\'" file))))
-     (directory-files-recursively my/org-directory "\\.org\\'"))))
-
-(defun my/org-refresh-agenda-files (&rest _)
-  "Refresh `org-agenda-files' from `my/org-directory'."
-  (setq org-agenda-files (my/org-agenda-files)))
-
-(defconst my/org-math-note-template
-  "#+TITLE: %s\n#+FILETAGS: :math:\n#+STARTUP: overview inlineimages\n#+OPTIONS: toc:t num:nil ^:nil\n\n* Definitions\n\n* Statements\n\n* Examples\n\n* Scratch\n"
-  "Template inserted for math-heavy Org notes.")
-
-(defconst my/org-preview-latex-header
-  "\\documentclass{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage[T1]{fontenc}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-\\usepackage{mathtools}
-\\usepackage{amsthm}
-\\usepackage{bm}
-\\usepackage{graphicx}
-\\usepackage{xcolor}
-\\pagestyle{empty}"
-  "Lean LaTeX header used for Org fragment previews.")
 
 (defconst my/org-html-style
   "<style>
@@ -79,74 +58,40 @@ body {
   border-radius: 18px;
   box-shadow: 0 18px 60px rgba(62, 46, 24, 0.08);
 }
-h1, h2, h3, h4 {
-  color: #2d2416;
-  line-height: 1.3;
-}
-h1.title {
-  margin-bottom: 0.4rem;
-  font-size: 2.2rem;
-}
-a {
-  color: #8a4b08;
-}
-pre, code {
-  font-family: \"SauceCodePro Nerd Font Mono\", \"SF Mono\", \"Menlo\", monospace;
-}
-pre {
-  overflow-x: auto;
-  padding: 1rem;
-  border-radius: 12px;
-  background: #f2ede3;
-}
-blockquote {
-  margin: 1.2rem 0;
-  padding: 0.2rem 1rem;
-  border-left: 4px solid #c58940;
-  background: #fbf7f0;
-}
-img {
-  display: block;
-  max-width: 100%;
-  margin: 1.2rem auto;
-  border-radius: 10px;
-}
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5rem 0;
-}
-th, td {
-  border: 1px solid #d6ccb8;
-  padding: 0.6rem 0.8rem;
-}
+h1, h2, h3, h4 { color: #2d2416; line-height: 1.3; }
+h1.title { margin-bottom: 0.4rem; font-size: 2.2rem; }
+a { color: #8a4b08; }
+pre, code { font-family: \"SauceCodePro Nerd Font Mono\", \"SF Mono\", \"Menlo\", monospace; }
+pre { overflow-x: auto; padding: 1rem; border-radius: 12px; background: #f2ede3; }
+blockquote { margin: 1.2rem 0; padding: 0.2rem 1rem; border-left: 4px solid #c58940; background: #fbf7f0; }
+img { display: block; max-width: 100%; margin: 1.2rem auto; border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; }
+th, td { border: 1px solid #d6ccb8; padding: 0.6rem 0.8rem; }
 </style>"
   "Default HTML style used for Org writeups.")
 
-(defconst my/org-writeup-template
-  "#+TITLE: Writeup Title
-#+AUTHOR: weland
-#+DATE: %U
-#+LANGUAGE: zh-CN
-#+OPTIONS: toc:t num:t ^:nil broken-links:t
-#+STARTUP: inlineimages
-#+LATEX_CLASS: org-zh-writeup
-#+LATEX_COMPILER: lualatex
-#+HTML_HEAD_EXTRA: <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n"
-  "Base Org writeup template.")
-
-(defconst my/org-alert-active-todo-keywords '("TODO" "NEXT")
-  "TODO keywords that should produce macOS Org reminders.")
-
-(defun my/org-alert-match-string ()
-  "Build the `org-alert' match string for active scheduled tasks."
-  (let ((todo-clause
-         (mapconcat (lambda (keyword)
-                      (format "TODO=\"%s\"" keyword))
-                    my/org-alert-active-todo-keywords
-                    "|")))
-    (format "(%s)+(SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"|DEADLINE>=\"<today>\"+DEADLINE<\"<tomorrow>\")"
-            todo-clause)))
+(defconst my/org-zh-writeup-class
+  '("org-zh-writeup"
+    "\\documentclass[11pt,a4paper]{ctexart}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{graphicx}
+\\usepackage{grffile}
+\\usepackage{longtable}
+\\usepackage{booktabs}
+\\usepackage{float}
+\\usepackage{wrapfig}
+\\usepackage{capt-of}
+\\usepackage{xcolor}
+\\usepackage{hyperref}
+\\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\\setlength{\\parindent}{2em}
+\\linespread{1.2}"
+    ("\\section{%s}" . "\\section*{%s}")
+    ("\\subsection{%s}" . "\\subsection*{%s}")
+    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+    ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+  "LaTeX class definition for Chinese writeups.")
 
 (defun my/org-point-in-latex-p ()
   "Return non-nil when point is inside an Org LaTeX construct."
@@ -170,11 +115,32 @@ th, td {
    (t
     (org-cycle))))
 
-(defun my/org-insert-math-note-template ()
-  "Insert a compact template for Denote-based math notes."
+(defun my/org-buffer-image-dir ()
+  "Return the image directory for the current Org buffer."
+  (if buffer-file-name
+      (expand-file-name "assets" (file-name-directory buffer-file-name))
+    (expand-file-name "assets" default-directory)))
+
+(defun my/org-mode-setup ()
+  "Configure Org mode for image-heavy writeups."
+  (setq-local line-spacing 0.12)
+  (setq-local org-download-image-dir (my/org-buffer-image-dir))
+  (unless (file-directory-p org-download-image-dir)
+    (make-directory org-download-image-dir t))
+  (org-display-inline-images))
+
+(defun my/org-paste-image-dwim ()
+  "Paste an image from the clipboard into the current Org buffer."
   (interactive)
-  (insert (format my/org-math-note-template
-                  (read-string "Math note title: "))))
+  (require 'org-download)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "This command only works in org-mode"))
+  (unless (executable-find (or (bound-and-true-p org-download-clipboard-command) ""))
+    (user-error "Clipboard image paste requires pngpaste in PATH"))
+  (org-download-clipboard))
+
+
+;;;; Core org
 
 (use-package org
   :straight nil
@@ -185,11 +151,7 @@ th, td {
    ("C-c i p" . org-download-clipboard)
    ("C-c i y" . my/org-paste-image-dwim)
    ("C-c i t" . org-toggle-inline-images)
-    ("C-c x l" . org-latex-preview)
-   ("C-c e p" . my/org-insert-pdf-writeup-template)
-   ("C-c e h" . my/org-insert-html-writeup-template)
-   ("C-c e m" . my/org-insert-math-note-template)
-   ("C-c e w" . my/org-insert-writeup-template))
+   ("C-c x l" . org-latex-preview))
   :hook
   ((org-mode . visual-line-mode)
    (org-mode . my/org-mode-setup)
@@ -201,6 +163,30 @@ th, td {
 
   (setq org-directory my/org-directory
         org-default-notes-file (expand-file-name "inbox.org" org-directory)
+        org-todo-keywords my/org-ai-todo-keywords
+        org-todo-keyword-faces '(("NEXT" . "DeepSkyBlue")
+                                 ("WAIT" . "goldenrod")
+                                 ("CANCELLED" . "gray50"))
+        org-log-done 'time
+        org-log-into-drawer t
+        org-log-reschedule 'time
+        org-log-redeadline 'time
+        org-enforce-todo-dependencies t
+        org-enforce-todo-checkbox-dependencies t
+        org-tag-alist '(("ai" . ?a)
+                        ("deep" . ?d)
+                        ("quick" . ?q)
+                        ("meeting" . ?m)
+                        ("errand" . ?e))
+        org-ellipsis " ▾"
+        org-hide-emphasis-markers nil
+        org-pretty-entities t
+        org-pretty-entities-include-sub-superscripts nil
+        org-image-actual-width '(720)
+        org-startup-with-inline-images t
+        org-startup-with-latex-preview nil
+
+        ;; Agenda
         org-agenda-window-setup 'current-window
         org-agenda-span 'day
         org-agenda-start-with-log-mode t
@@ -217,12 +203,9 @@ th, td {
         org-agenda-custom-commands
         '(("d" "Dashboard"
            ((agenda "" ((org-agenda-overriding-header "Today")))
-            (todo "NEXT"
-                  ((org-agenda-overriding-header "Next Actions")))
-            (todo "WAIT"
-                  ((org-agenda-overriding-header "Waiting")))
-            (todo "TODO"
-                  ((org-agenda-overriding-header "Inbox / Backlog")))))
+            (todo "NEXT" ((org-agenda-overriding-header "Next Actions")))
+            (todo "WAIT" ((org-agenda-overriding-header "Waiting")))
+            (todo "TODO" ((org-agenda-overriding-header "Inbox / Backlog")))))
           ("A" "AI Task Board"
            ((tags-todo "+ai/TODO"
                        ((org-agenda-overriding-header "AI Inbox / Needs Triage")
@@ -243,21 +226,8 @@ th, td {
                         (org-agenda-overriding-header "This Week")))
             (todo "TODO|NEXT|WAIT"
                   ((org-agenda-overriding-header "Open Tasks"))))))
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)"))
-        org-todo-keyword-faces '(("NEXT" . "DeepSkyBlue")
-                                 ("WAIT" . "goldenrod")
-                                 ("CANCELLED" . "gray50"))
-        org-log-done 'time
-        org-log-into-drawer t
-        org-log-reschedule 'time
-        org-log-redeadline 'time
-        org-enforce-todo-dependencies t
-        org-enforce-todo-checkbox-dependencies t
-        org-tag-alist '(("ai" . ?a)
-                        ("deep" . ?d)
-                        ("quick" . ?q)
-                        ("meeting" . ?m)
-                        ("errand" . ?e))
+
+        ;; Capture / refile / archive
         org-capture-templates
         `(("a" "AI task" entry
            (file+headline ,my/org-ai-inbox-file ,my/org-ai-inbox-heading)
@@ -268,13 +238,8 @@ th, td {
         org-outline-path-complete-in-steps nil
         org-archive-location
         (concat (file-name-as-directory my/org-archive-directory) "%s_archive::")
-        org-ellipsis " ▾"
-        org-hide-emphasis-markers nil
-        org-pretty-entities t
-        org-pretty-entities-include-sub-superscripts nil
-        org-image-actual-width '(720)
-        org-startup-with-inline-images t
-        org-startup-with-latex-preview nil
+
+        ;; Export (HTML)
         org-export-with-smart-quotes t
         org-html-doctype "html5"
         org-html-html5-fancy t
@@ -283,6 +248,8 @@ th, td {
         org-html-head-include-scripts nil
         org-html-postamble nil
         org-html-head-extra my/org-html-style
+
+        ;; Export (LaTeX)
         org-latex-compiler "lualatex"
         org-latex-src-block-backend 'minted
         org-latex-default-class "org-zh-writeup"
@@ -311,30 +278,12 @@ th, td {
 
   (make-directory org-directory t)
   (make-directory my/org-archive-directory t)
-  (my/org-refresh-agenda-files)
-  (advice-add 'org-agenda :before #'my/org-refresh-agenda-files)
+  (my/org-ai-refresh-agenda-files)
+  (advice-add 'org-agenda :before (lambda (&rest _) (my/org-ai-refresh-agenda-files)))
+  (add-to-list 'org-latex-classes my/org-zh-writeup-class))
 
-  (add-to-list 'org-latex-classes
-               '("org-zh-writeup"
-                 "\\documentclass[11pt,a4paper]{ctexart}
-\\usepackage[margin=1in]{geometry}
-\\usepackage{graphicx}
-\\usepackage{grffile}
-\\usepackage{longtable}
-\\usepackage{booktabs}
-\\usepackage{float}
-\\usepackage{wrapfig}
-\\usepackage{capt-of}
-\\usepackage{xcolor}
-\\usepackage{hyperref}
-\\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
-\\setlength{\\parindent}{2em}
-\\linespread{1.2}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+;;;; Image paste
 
 (use-package org-download
   :after org
@@ -344,15 +293,15 @@ th, td {
         org-download-screenshot-basename "screenshot.png"
         org-download-image-attr-list '("#+ATTR_ORG: :width 720")
         org-download-display-inline-images t)
-
   (when *is-a-mac*
     (setq org-download-screenshot-method "screencapture -i %s")
-    (setq org-download-clipboard-command
-          (or (executable-find "pngpaste")
-              "pngpaste")))
-
+    (defvar org-download-clipboard-command
+      (or (executable-find "pngpaste") "pngpaste")))
   (with-eval-after-load 'dired
     (define-key dired-mode-map (kbd "Y") #'org-download-yank)))
+
+
+;;;; Visual
 
 (use-package org-modern
   :after org
@@ -360,20 +309,28 @@ th, td {
   (setq org-modern-table nil
         org-modern-keyword nil
         org-modern-block-name nil
-        ;; Avoid rare triangle glyphs like ⯆ which some mono fonts render poorly.
         org-modern-fold-stars '(("▶" . "▼")
                                 ("▷" . "▽")
                                 ("▸" . "▾")))
   :config
   (global-org-modern-mode 1))
 
+
+;;;; LaTeX preview
+;; macOS 15+ notes (see memory/macos_ctex_latex_preview.md):
+;;   1. ctex auto-fontset fails (STKaiti moved to AssetsV2) → fontset=none + Songti SC
+;;   2. dvilualatex + luatexja fails → map lualatex to lualatex (PDF mode)
+;;   3. dvisvgm needs mutool (mupdf-tools) — Ghostscript >= 10.01 unsupported
+;;   4. preview.sty dvips option breaks tightpage in PDF mode → remove dvips
+
 (use-package org-latex-preview
   :straight nil
   :after org
   :config
-  (plist-put org-latex-preview-appearance-options
-             :page-width 0.8)
-  (setq org-latex-preview-process-precompile nil)
+  (plist-put org-latex-preview-appearance-options :page-width 0.8)
+  (setq org-latex-preview-process-precompile nil
+        org-latex-preview-mode-display-live t
+        org-latex-preview-mode-update-delay 0.25)
   (setf (alist-get "lualatex" org-latex-preview-compiler-command-map nil nil #'equal)
         "lualatex")
   (setq org-latex-preview--include-preview-string
@@ -388,33 +345,38 @@ th, td {
   (setf (alist-get 'dvisvgm org-latex-preview-process-alist)
         '(:programs ("lualatex" "dvisvgm")
           :description "pdf > svg (lualatex)"
-          :message "you need to install the programs: lualatex, dvisvgm, and mutool (mupdf-tools)."
+          :message "needs: lualatex, dvisvgm, and mutool (brew install mupdf-tools)."
           :image-input-type "pdf"
           :image-output-type "svg"
           :latex-compiler ("lualatex -interaction nonstopmode -output-directory %o %f")
           :latex-precompiler ("lualatex -output-directory %o -ini -jobname=%b \"&lualatex\" mylatexformat.ltx %f")
           :image-converter ("dvisvgm --pdf --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview -o %B-%%9p.svg %f")))
-  (add-hook 'org-mode-hook 'org-latex-preview-mode)
-  (setq org-latex-preview-mode-display-live t
-        org-latex-preview-mode-update-delay 0.25))
+  (add-hook 'org-mode-hook 'org-latex-preview-mode))
 
 (when *is-a-mac*
   (setenv "LIBGS" "/opt/homebrew/lib/libgs.dylib"))
 
-(use-package tex
-  :straight auctex
-  :defer t)
+
+;;;; CDLaTeX
+
+(use-package cdlatex
+  :after org
+  :hook (org-mode . turn-on-org-cdlatex)
+  :bind (:map org-mode-map ("C-c {" . cdlatex-environment))
+  :config
+  (setq cdlatex-use-dollar-to-ensure-math nil))
+
+
+;;;; Denote
 
 (use-package denote
-  :bind
-  (:prefix-map my/denote-map
-               :prefix "C-c d"
-               ("d" . denote)
-               ("f" . denote-open-or-create)
-               ("r" . denote-rename-file)
-               ("l" . denote-link-or-create))
-  :hook
-  (org-mode . denote-rename-buffer-mode)
+  :bind (:prefix-map my/denote-map
+                     :prefix "C-c d"
+                     ("d" . denote)
+                     ("f" . denote-open-or-create)
+                     ("r" . denote-rename-file)
+                     ("l" . denote-link-or-create))
+  :hook (org-mode . denote-rename-buffer-mode)
   :config
   (setq denote-directory my/org-directory
         denote-known-keywords '("math" "algebra" "analysis" "geometry" "logic" "topology")
@@ -422,159 +384,20 @@ th, td {
         denote-sort-keywords t
         denote-rename-buffer-format "[D] %t"))
 
-(use-package cdlatex
-  :after org
-  :hook
-  (org-mode . turn-on-org-cdlatex)
-  :bind
-  (:map org-mode-map
-        ("C-c {" . cdlatex-environment))
-  :config
-  (setq cdlatex-use-dollar-to-ensure-math nil))
 
-(defun my/org-buffer-image-dir ()
-  "Return the image directory for the current Org buffer."
-  (if buffer-file-name
-      (expand-file-name "assets" (file-name-directory buffer-file-name))
-    (expand-file-name "assets" default-directory)))
+;;;; AucTeX
 
-(defun my/org-mode-setup ()
-  "Configure Org mode for image-heavy writeups."
-  (setq-local line-spacing 0.12)
-  (setq-local org-download-image-dir (my/org-buffer-image-dir))
-  (unless (file-directory-p org-download-image-dir)
-    (make-directory org-download-image-dir t))
-  (org-display-inline-images))
+(use-package tex
+  :straight auctex
+  :defer t)
 
-(defun my/org-paste-image-dwim ()
-  "Paste an image from the clipboard into the current Org buffer."
-  (interactive)
-  (require 'org-download)
-  (unless (derived-mode-p 'org-mode)
-    (user-error "This command only works in org-mode"))
-  (unless (executable-find (or org-download-clipboard-command ""))
-    (user-error "Clipboard image paste requires pngpaste in PATH"))
-  (org-download-clipboard))
 
-(defun my/org--insert-template (extra-lines)
-  "Insert a writeup template, optionally with EXTRA-LINES."
-  (interactive)
-  (when (and buffer-file-name (> (buffer-size) 0))
-    (goto-char (point-max))
-    (unless (bolp)
-      (insert "\n\n")))
-  (insert my/org-writeup-template)
-  (when extra-lines
-    (save-excursion
-      (goto-char (point-min))
-      (forward-line 7)
-      (insert extra-lines)))
-  (goto-char (point-min)))
-
-(defun my/org-insert-writeup-template ()
-  "Insert a general-purpose writeup template."
-  (interactive)
-  (my/org--insert-template nil))
-
-(defun my/org-insert-pdf-writeup-template ()
-  "Insert a PDF-oriented writeup template."
-  (interactive)
-  (my/org--insert-template
-   "#+LATEX_HEADER: \\usepackage{fvextra}\n#+LATEX_HEADER: \\DefineVerbatimEnvironment{Verbatim}{Verbatim}{breaklines=true,breakanywhere=true}\n"))
-
-(defun my/org-insert-html-writeup-template ()
-  "Insert an HTML-oriented writeup template."
-  (interactive)
-  (my/org--insert-template
-   "#+HTML_HEAD_EXTRA: <meta name=\"color-scheme\" content=\"light\">\n"))
-
-(defun my/org--osascript-escape (text)
-  "Escape TEXT for inclusion in an AppleScript string literal."
-  (let ((escaped (replace-regexp-in-string "\\\\" "\\\\\\\\" (or text "") t t)))
-    (replace-regexp-in-string "\"" "\\\\\"" escaped t t)))
-
-(defun my/org--trim-message (text)
-  "Trim leading and trailing whitespace from TEXT."
-  (replace-regexp-in-string
-   "\\`[[:space:]\n\r\t]+\\|[[:space:]\n\r\t]+\\'"
-   ""
-   (or text "")))
-
-(defun my/org--mac-notify-via-notifications (title message)
-  "Send a macOS notification with TITLE and MESSAGE via Emacs notifications."
-  (when (require 'notifications nil t)
-    (notifications-notify :title title
-                          :body message
-                          :app-name "Emacs")
-    t))
-
-(defun my/org--mac-notify-via-terminal-notifier (title message)
-  "Send a macOS notification with TITLE and MESSAGE via terminal-notifier."
-  (let ((notifier (executable-find "terminal-notifier")))
-    (when notifier
-      (start-process "my-org-terminal-notifier"
-                     nil
-                     notifier
-                     "-title" title
-                     "-message" message
-                     "-sender" "org.gnu.Emacs")
-      t)))
-
-(defun my/org--mac-notify-via-osascript (title message)
-  "Send a macOS notification with TITLE and MESSAGE via AppleScript."
-  (let ((osascript (executable-find "osascript")))
-    (when osascript
-      (start-process
-       "my-org-osascript-notify"
-       nil
-       osascript
-       "-e"
-       (format "display notification \"%s\" with title \"%s\""
-               (my/org--osascript-escape message)
-               (my/org--osascript-escape title)))
-      t)))
-
-(defun my/org-alert--mac-notifier (info)
-  "Deliver alert INFO to macOS notification backends."
-  (let* ((title (or (plist-get info :title) "Org Agenda"))
-         (message (or (plist-get info :message) ""))
-         (trimmed-message (my/org--trim-message message)))
-    (or (my/org--mac-notify-via-notifications title trimmed-message)
-        (my/org--mac-notify-via-terminal-notifier title trimmed-message)
-        (my/org--mac-notify-via-osascript title trimmed-message)
-        (message "%s: %s" title trimmed-message))))
+;;;; Notifications (alert osx-notifier on macOS, message elsewhere)
 
 (use-package alert
   :commands (alert)
   :config
-  (if *is-a-mac*
-      (progn
-        (alert-define-style 'my-macos-notifier
-          :title "macOS Notification Center"
-          :notifier #'my/org-alert--mac-notifier)
-        (setq alert-default-style 'my-macos-notifier))
-    (setq alert-default-style 'message)))
-
-(use-package org-alert
-  :after (org alert)
-  :commands (org-alert-enable)
-  :init
-  (setq org-alert-interval 300
-        org-alert-notify-cutoff 10
-        org-alert-notify-after-event-cutoff 0
-        org-alert-notification-title "Org Agenda"
-        org-alert-match-string (my/org-alert-match-string))
-  :config
-  (unless noninteractive
-    (org-alert-enable)))
-
-(defun my/org-test-notification ()
-  "Send a test Org notification through the configured alert backend."
-  (interactive)
-  (require 'alert)
-  (alert "This is a test notification from your Org reminder pipeline."
-         :title "Org Agenda"
-         :severity 'normal))
+  (setq alert-default-style (if *is-a-mac* 'osx-notifier 'message)))
 
 (provide 'init-org)
 ;;; init-org.el ends here

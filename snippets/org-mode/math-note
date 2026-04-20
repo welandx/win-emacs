@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: math-note
+# key: math-note
+# --
+#+TITLE: ${1:Note Title}
+#+FILETAGS: :math:
+#+STARTUP: overview inlineimages
+#+OPTIONS: toc:t num:nil ^:nil
+
+* Definitions
+
+* Statements
+
+* Examples
+
+* Scratch
+$0

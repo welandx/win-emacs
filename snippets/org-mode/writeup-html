@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: writeup-html
+# key: writeup-html
+# --
+#+TITLE: ${1:Writeup Title}
+#+AUTHOR: weland
+#+DATE: `(format-time-string "[%Y-%m-%d %a]")`
+#+LANGUAGE: zh-CN
+#+OPTIONS: toc:t num:t ^:nil broken-links:t
+#+STARTUP: inlineimages
+#+HTML_HEAD_EXTRA: <meta name="viewport" content="width=device-width, initial-scale=1">
+#+HTML_HEAD_EXTRA: <meta name="color-scheme" content="light">
+
+$0

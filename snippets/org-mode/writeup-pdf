@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: writeup-pdf
+# key: writeup-pdf
+# --
+#+TITLE: ${1:Writeup Title}
+#+AUTHOR: weland
+#+DATE: `(format-time-string "[%Y-%m-%d %a]")`
+#+LANGUAGE: zh-CN
+#+OPTIONS: toc:t num:t ^:nil broken-links:t
+#+STARTUP: inlineimages
+#+LATEX_CLASS: org-zh-writeup
+#+LATEX_COMPILER: lualatex
+#+LATEX_HEADER: \usepackage{fvextra}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{Verbatim}{Verbatim}{breaklines=true,breakanywhere=true}
+
+$0
