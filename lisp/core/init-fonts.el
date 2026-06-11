@@ -80,16 +80,18 @@
        (:family "LXGW WenKai GB Screen R" :scale 0.9)
        (:family "TsangerYangMingTi" :scale 1.0))
     :han
-     ( (:family "LXGW WenKai" :scale 1.0)
-       (:family "TsangerJinKai05" :scale 1.0)
-       (:family "LXGW WenKai Screen" :scale 0.9)
-       (:family "霞鹜文楷 屏幕阅读版" :scale 0.9)
-       (:family "LXGW WenKai GB Screen R" :scale 0.9)
-       (:family "TsangerYangMingTi" :scale 1.0)
+    ((:family "SarasaTermSCNerd" :scale 1.0)
+     (:family "Sarasa Term SC Nerd" :scale 1.0)
+     (:family "LXGW WenKai" :scale 1.0)
+     (:family "TsangerJinKai05" :scale 1.0)
+     (:family "LXGW WenKai Screen" :scale 0.9)
+     (:family "霞鹜文楷 屏幕阅读版" :scale 0.9)
+     (:family "LXGW WenKai GB Screen R" :scale 0.9)
+     (:family "TsangerYangMingTi" :scale 1.0)
      (:family "LXGW Neo Xihei" :scale 1.3)
      (:family "WenQuanYi Micro Hei Mono" :scale 1.3)
      (:family "LXGW WenKai Mono" :scale 1.3)
-     (:family "PingFang SC" :scale 1.0)
+     (:family "PingFang SC" :scale 0.95)
      (:family "Microsoft Yahei UI" :scale 1.3)
      (:family "Simhei" :scale 1.3)))
   "MinEmacs fonts used by `+setup-fonts'.
@@ -149,6 +151,50 @@ scaling factor for the font in Emacs' `face-font-rescale-alist'. See the
 (defun +font-installed-p (font-family)
   "Check if FONT-FAMILY is installed on the system."
   (and font-family (member font-family (font-family-list)) t))
+
+(defconst weland-sarasa-buffer-font-families
+  '("SarasaTermSCNerd" "Sarasa Term SC Nerd")
+  "Preferred Sarasa font families for buffer-local font overrides.")
+
+(defun weland-sarasa-buffer-font-family ()
+  "Return the first available Sarasa buffer font family."
+  (catch 'family
+    (dolist (family weland-sarasa-buffer-font-families)
+      (when (+font-installed-p family)
+        (throw 'family family)))))
+
+(defun weland-sarasa-buffer-clear-stale-composition ()
+  "Remove stale composition properties before applying a Sarasa buffer face."
+  (let ((inhibit-read-only t)
+        (inhibit-modification-hooks t))
+    (remove-text-properties (point-min) (point-max) '(composition nil))))
+
+(defvar-local weland-sarasa-buffer-header-line-remap-cookie nil
+  "Face remap cookie for making the current buffer header line use Sarasa.")
+
+(defun weland-sarasa-buffer-remap-header-line (family)
+  "Make the current buffer header line use font FAMILY."
+  (when weland-sarasa-buffer-header-line-remap-cookie
+    (face-remap-remove-relative
+     weland-sarasa-buffer-header-line-remap-cookie))
+  (setq-local weland-sarasa-buffer-header-line-remap-cookie
+              (face-remap-add-relative
+               'header-line
+               `(:family ,family :weight regular))))
+
+(defun weland-buffer-use-sarasa-font ()
+  "Use Sarasa as the buffer-local font in the current buffer."
+  (when-let* ((family (weland-sarasa-buffer-font-family)))
+    (remove-hook 'after-change-functions
+                 'weland-codex-ide-compose-cjk-after-change
+                 t)
+    (weland-sarasa-buffer-clear-stale-composition)
+    (weland-sarasa-buffer-remap-header-line family)
+    (when (bound-and-true-p buffer-face-mode)
+      (buffer-face-mode -1))
+    (setq-local buffer-face-mode-face `(:family ,family :weight regular))
+    (buffer-face-mode 1)
+    (force-window-update (current-buffer))))
 
 (defun +apply-font-or-script (script-or-face)
   "Set font for SCRIPT-OR-FACE from `minemacs-fonts-plist'."

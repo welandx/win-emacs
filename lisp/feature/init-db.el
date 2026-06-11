@@ -4,6 +4,7 @@
   :straight
   (clutch :type git :host github :repo "LuciusChen/clutch")
   :commands (clutch-query-console clutch-switch-console clutch-mode clutch-repl)
+  :hook (clutch-result-mode . weland-buffer-use-sarasa-font)
   :bind
   (("C-c d q" . clutch-query-console)
    ("C-c d s" . clutch-switch-console)

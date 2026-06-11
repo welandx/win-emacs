@@ -28,23 +28,87 @@
 
 (use-package gptel
   :straight (gptel :host github :repo "karthink/gptel")
+  :bind ("C-c g" . gptel-menu)
 ;;  :defer t
   :config
+  (require 'gptel-integrations)
   (setq-default gptel-default-mode 'org-mode)
-  (setq kimi
-    (gptel-make-anthropic "kimi"
-      :host "api.kimi.com"
-      :endpoint "/coding/v1/messages"
+  (setq volcengine-coding
+    (gptel-make-openai "volcengine-coding"
+      :host "ark.cn-beijing.volces.com"
+      :endpoint "/api/coding/v3/chat/completions"
       :key 'gptel-api-key
-      ;;:stream t
-      :models '("kimi-for-coding"
-                 "kimi-k2.5"
-                "kimi-k2-0905-preview"
-                "kimi-k2-thinking"
-                "moonshot-v1-8k"
-                "moonshot-v1-32k"
-                "moonshot-v1-128k")))
-  (setq-default gptel-backend kimi)
-  (setq-default gptel-model 'kimi-for-coding))
+      :stream t
+      :models '("ark-code-latest"
+                "doubao-seed-code-preview-latest"
+                "deepseek-v4-pro"
+                "deepseek-v4-flash"
+                "glm-5.1"
+                "kimi-k2.6")))
+  (setq-default gptel-backend volcengine-coding)
+  (setq-default gptel-model 'ark-code-latest)
+
+  (defun weland-gptel-block-missing-tool-args (tool-call)
+    "Block gptel TOOL-CALLs that omit required tool arguments."
+    (when-let* ((name (plist-get tool-call :name))
+                (args (plist-get tool-call :args))
+                (tool (cl-find name gptel-tools
+                               :key #'gptel-tool-name :test #'equal))
+                (missing
+                 (cl-loop for arg in (gptel-tool-args tool)
+                          for arg-name = (plist-get arg :name)
+                          for key = (intern (concat ":" arg-name))
+                          unless (or (plist-get arg :optional)
+                                     (and (plist-member args key)
+                                          (plist-get args key)))
+                          collect arg-name)))
+      (when missing
+        (let ((message (format "Tool %s missing required argument%s: %s"
+                               name
+                               (if (cdr missing) "s" "")
+                               (string-join missing ", "))))
+          (message "%s" message)
+          (list :block message)))))
+
+  (add-hook 'gptel-pre-tool-call-functions
+            #'weland-gptel-block-missing-tool-args))
+
+(defun weland-tavily-api-key ()
+  "Return the Tavily API key from the environment or auth-source."
+  (or (getenv "TAVILY_API_KEY")
+      (auth-source-pick-first-password :host "tavily.com")
+      ""))
+
+(use-package mcp
+  :straight (:host github :repo "lizqwerscott/mcp.el")
+  :after gptel
+  :commands (mcp-hub mcp-hub-start-all-server)
+  :init
+  (setq mcp-hub-servers
+        `(("tavily" . (:command "npx"
+                       :args ("-y" "tavily-mcp")
+                       :timeout 60
+                       :env (:TAVILY_API_KEY ,(weland-tavily-api-key))))))
+  :config
+  (require 'mcp-hub))
+
+(defvaralias 'weland-codex-ide-font-families
+  'weland-sarasa-buffer-font-families)
+(defalias 'weland-codex-ide-font-family #'weland-sarasa-buffer-font-family)
+(defalias 'weland-codex-ide-clear-stale-composition
+  #'weland-sarasa-buffer-clear-stale-composition)
+(defalias 'weland-codex-ide-use-sarasa-font #'weland-buffer-use-sarasa-font)
+(defalias 'weland-codex-ide-use-fonts #'weland-codex-ide-use-sarasa-font)
+
+(defun weland-codex-ide-enable-rime ()
+  "Enable Rime input method in codex-ide buffers."
+  (when *is-a-mac*
+    (activate-input-method "rime")))
+
+(use-package codex-ide
+  :straight (:type git :host github :repo "dgillis/emacs-codex-ide")
+  :hook ((codex-ide-session-mode . weland-codex-ide-use-sarasa-font)
+         (codex-ide-session-mode . weland-codex-ide-enable-rime))
+  :bind ("C-c C-;" . codex-ide-menu))
 
 (provide 'init-copilot)
