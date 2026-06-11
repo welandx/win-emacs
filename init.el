@@ -116,6 +116,13 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+(use-package marginalia
+  :straight (:type git :host github :repo "minad/marginalia" :tag "2.10")
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode 1))
+
 (use-package vertico-directory
   :straight nil
   :after vertico
@@ -160,8 +167,32 @@
 
 (use-package autorevert
   :straight nil
+  :preface
+  (defvar weland-auto-revert-max-file-size (* 10 1024 1024)
+    "Maximum local file size for enabling `auto-revert-mode'.")
+
+  (defun weland-auto-revert-suitable-buffer-p ()
+    "Return non-nil when the current buffer should auto-revert."
+    (and buffer-file-name
+         (not (file-remote-p buffer-file-name))
+         (file-exists-p buffer-file-name)
+         (not (file-directory-p buffer-file-name))
+         (let ((size (file-attribute-size
+                      (file-attributes buffer-file-name))))
+           (or (not (integerp size))
+               (<= size weland-auto-revert-max-file-size)))))
+
+  (defun weland-enable-auto-revert-for-suitable-buffer ()
+    "Enable `auto-revert-mode' for local file buffers that are cheap to watch."
+    (when (weland-auto-revert-suitable-buffer-p)
+      (auto-revert-mode 1)))
+
   :hook
-  (after-init . global-auto-revert-mode))
+  ((find-file . weland-enable-auto-revert-for-suitable-buffer)
+   (dired-mode . auto-revert-mode))
+  :custom
+  (auto-revert-avoid-polling t)
+  (auto-revert-verbose nil))
 
 (use-package ripgrep
   :bind
@@ -205,7 +236,8 @@
   :straight nil
   :defer 0.1
   :bind
-  ("C-c o" . recentf-open)
+  (("C-c o" . recentf-open)
+   ("C-c j" . recentf-open-files))
   :init
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/tmp/" "/ssh:"))
@@ -228,7 +260,8 @@
 (when *is-a-mac*
   (setq-default org-directory "~/Documents/org")
   (require-platform-module 'init-osx-keys)
-  (require-platform-module 'init-exec-path))
+  (require-platform-module 'init-exec-path)
+  (require-platform-module 'init-rime))
 
 (when *is-a-linux*
   (setq-default org-directory "~/Documents/org")
@@ -245,6 +278,7 @@
 (require-feature-module 'init-org-ai)
 (require-feature-module 'init-org)
 (require-feature-module 'init-text)
+(require-feature-module 'init-ctf)
 (require-feature-module 'init-db)
 (require-feature-module 'init-git)
 (require-feature-module 'init-ibuffer)
@@ -259,6 +293,7 @@
 (require-feature-module 'init-corfu)
 (require-feature-module 'init-lsp)
 (require-feature-module 'init-web)
+(require-feature-module 'init-mail)
 
 (run-with-idle-timer
  2 nil

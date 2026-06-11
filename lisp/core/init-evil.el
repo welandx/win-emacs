@@ -1,3 +1,19 @@
+(defun my/meow-avy-goto-char ()
+  "Jump with `avy-goto-char' and select the jumped range in Meow."
+  (interactive)
+  (let ((origin-buffer (current-buffer))
+        (origin (point)))
+    (call-interactively #'avy-goto-char)
+    (when (and (eq (current-buffer) origin-buffer)
+               (/= (point) origin))
+      (let* ((target (point))
+             (selection-end (if (> target origin)
+                                (min (point-max) (1+ target))
+                              target)))
+        (thread-first
+          (meow--make-selection '(select . avy) origin selection-end)
+          (meow--select t))))))
+
 (defun my/meow-setup ()
   "Configure Meow keymaps."
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -46,7 +62,7 @@
    '("D" . meow-backward-delete)
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
-   '("f" . meow-find)
+   '("f" . my/meow-avy-goto-char)
    '("g" . meow-cancel-selection)
    '("G" . meow-grab)
    '("h" . meow-left)
@@ -70,7 +86,7 @@
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
-   '("s" . avy-goto-char)
+   '("s" . meow-kill)
    '("S" . meow-sync-grab)
    '("t" . meow-till)
    '("u" . meow-undo)

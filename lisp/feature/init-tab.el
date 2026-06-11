@@ -18,8 +18,20 @@
   :straight nil
   :custom
   (tab-bar-show t)
+  (tab-bar-select-tab-modifiers '(meta))
   :bind
-  ("C-<tab>" . tab-next))
+  ("C-<tab>" . tab-next)
+  ("M-]" . tab-bar-switch-to-next-tab)
+  ("M-[" . tab-bar-switch-to-prev-tab)
+  ("M-1" . tab-bar-select-tab)
+  ("M-2" . tab-bar-select-tab)
+  ("M-3" . tab-bar-select-tab)
+  ("M-4" . tab-bar-select-tab)
+  ("M-5" . tab-bar-select-tab)
+  ("M-6" . tab-bar-select-tab)
+  ("M-7" . tab-bar-select-tab)
+  ("M-8" . tab-bar-select-tab)
+  ("M-9" . tab-bar-select-tab))
 
 (use-package workgroups2
   :defer 2
