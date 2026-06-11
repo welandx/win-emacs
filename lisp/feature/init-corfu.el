@@ -1,7 +1,8 @@
 (use-package corfu
   :hook ((prog-mode . corfu-mode)
          (shell-mode . corfu-mode)
-         (eshell-mode . corfu-mode))
+         (eshell-mode . corfu-mode)
+         (mu4e-compose-mode . corfu-mode))
   :bind
   (:map corfu-map
         ("SPC" . corfu-insert-separator)
