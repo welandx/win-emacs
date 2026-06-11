@@ -72,7 +72,10 @@ th, td { border: 1px solid #d6ccb8; padding: 0.6rem 0.8rem; }
 
 (defconst my/org-zh-writeup-class
   '("org-zh-writeup"
-    "\\documentclass[11pt,a4paper]{ctexart}
+    "\\documentclass[11pt,a4paper,fontset=none]{ctexart}
+\\setCJKmainfont{Songti SC}
+\\setCJKsansfont{PingFang SC}
+\\setCJKmonofont{Songti SC}
 \\usepackage[margin=1in]{geometry}
 \\usepackage{graphicx}
 \\usepackage{grffile}
@@ -85,7 +88,12 @@ th, td { border: 1px solid #d6ccb8; padding: 0.6rem 0.8rem; }
 \\usepackage{hyperref}
 \\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
 \\setlength{\\parindent}{2em}
-\\linespread{1.2}"
+\\linespread{1.2}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{mathtools}
+\\usepackage{amsthm}
+\\usepackage{bm}"
     ("\\section{%s}" . "\\section*{%s}")
     ("\\subsection{%s}" . "\\subsection*{%s}")
     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -250,23 +258,15 @@ th, td { border: 1px solid #d6ccb8; padding: 0.6rem 0.8rem; }
         org-html-head-extra my/org-html-style
 
         ;; Export (LaTeX)
-        org-latex-compiler "lualatex"
+        org-latex-compiler "xelatex"
         org-latex-src-block-backend 'minted
         org-latex-default-class "org-zh-writeup"
-        org-latex-pdf-process '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-                                "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-        org-latex-packages-alist '(("" "graphicx" t)
-                                   ("" "grffile" t)
-                                   ("" "longtable" nil)
-                                   ("" "booktabs" nil)
-                                   ("" "wrapfig" nil)
-                                   ("" "float" nil)
-                                   ("" "capt-of" nil)
-                                   ("" "amsmath" t)
-                                   ("" "amssymb" t)
-                                   ("" "mathtools" t)
-                                   ("" "amsthm" t)
-                                   ("" "bm" t))
+        org-latex-pdf-process '("mkdir -p .ltxout"
+                                "xelatex -shell-escape -interaction nonstopmode -output-directory .ltxout %f"
+                                "xelatex -shell-escape -interaction nonstopmode -output-directory .ltxout %f"
+                                "mv .ltxout/%b.pdf %o")
+        org-latex-default-packages-alist nil
+        org-latex-packages-alist nil
         org-latex-minted-options '(("breaklines" "true")
                                    ("breakanywhere" "true")
                                    ("breaksymbolleft" "")
@@ -302,6 +302,9 @@ th, td { border: 1px solid #d6ccb8; padding: 0.6rem 0.8rem; }
 
 
 ;;;; Visual
+
+(use-package valign
+  :hook (org-mode . valign-mode))
 
 (use-package org-modern
   :after org

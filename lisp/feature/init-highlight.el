@@ -18,7 +18,7 @@
   )
 
 (use-package markdown-mode
-  )
+  :hook (markdown-mode . valign-mode))
 
 (use-package lua-mode
   )
